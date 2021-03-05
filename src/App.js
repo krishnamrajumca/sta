@@ -191,7 +191,7 @@ const App = () => {
             <Link to="/Reports">Reports</Link>
           </div>
           <div className="sidebar-item">
-            <Link to="/Analytics">Analytics</Link>
+            <Link to="/Analytics">Smart Analyiser</Link>
           </div>
         </Sidebar>
         <div>
