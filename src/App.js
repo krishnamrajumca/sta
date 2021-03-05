@@ -140,7 +140,7 @@ const Dashboard = () => {
           <ApexChart data={data} />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 30, width: '100%' }}>
           <div style={{ width: '30%' }}>
             <ApexChart height={200} data={[data[0], data[1]]} />
           </div>
