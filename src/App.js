@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Sidebar } from 'primereact/sidebar';
-import { Button } from 'primereact/button';
+
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import dataset from './data.json'
+import SideBar from './sidebar'
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
+import { createBrowserHistory } from "history";
+
+
 import { Dropdown } from 'primereact/dropdown';
 
 import ApexChart from './charts/areaChart'
 import BarChart from './charts/barChart'
 import Cards from './cards/cards'
-import XLSX from 'xlsx';
 import moment from 'moment';
+import Reports from './pages/reports';
+import Analytics from './pages/analytics'
+const customHistory = createBrowserHistory();
 const Dashboard = () => {
   const [selectedProtocal, setSelectedProtocal] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -37,33 +41,59 @@ const Dashboard = () => {
   }]
   const notInclue = ["Start Time", "Interval", "End Time", "Node Name", "Access_Type", "Protocol"]
   const protocals = ["MAP", "CAMEL", "BSSAP", "RANAP", "ISUP", "SIP", "BICC", "H248"];
-  const networks = ["MSC1"]
+  const networks = ["MSC1", "MSC2"]
   useEffect(() => {
     console.log(timeInterval, selectedProtocal)
     if (selectedProtocal !== "" && selectedNetwork !== "") {
-      console.log(timeInterval, selectedProtocal)
-      const data = dataset.filter((d) => {
-        // console.log(d);
-        return d["Interval"] == timeInterval && d["Protocol"] == selectedProtocal
-      });
-      var temp = [];
-      if (data.length > 0) {
+      var mscData = dataset[selectedNetwork];
+      setCradsData(mscData);
+      setGraphData(mscData)
+    }
+  }, [timeInterval, selectedProtocal, selectedNetwork])
+  const setGraphData = (mscData) => {
+    var times = moment(timeInterval, "HH:mm").subtract(1, "hours");
+    var slots = [];
+    for (var i = 0; i < 12; i++) {
+      var timeSlot = times.add(5, "minutes").format("HH:mm");
+      slots.push(timeSlot)
+    }
+    protocals.map(proc => {
+      var obj = { name: proc };
+      var arr = [];
+      slots.map(slot => {
+        const data = mscData.filter((d) => {
+          return d["Interval"] === slot && d["Protocol"] === proc
+        });
+        if (data.length > 0) {
 
-        var row = data[0];
-        for (const property in row) {
-          if (notInclue.indexOf(property) == -1) {
-            temp.push({ name: property, value: row[property] })
-          }
+        }
+      })
+    })
+    console.log(times)
+  }
+  const setCradsData = (mscData) => {
+    console.log(timeInterval, selectedProtocal)
+    const data = mscData.filter((d) => {
+      // console.log(d);
+      return d["Interval"] === timeInterval && d["Protocol"] === selectedProtocal
+    });
+    var temp = [];
+    if (data.length > 0) {
 
+      var row = data[0];
+      for (const property in row) {
+        if (notInclue.indexOf(property) === -1) {
+          temp.push({ name: property, value: row[property] })
         }
 
       }
-      setFilteredData(temp);
-      console.log(data)
+
     }
-  }, [timeInterval, selectedProtocal, selectedNetwork])
+    setFilteredData(temp);
+    console.log(data)
+  }
   useEffect(() => {
-    handleCsvFile()
+
     const interval = setInterval(() => {
       handleInterval()
     }, 2000);
@@ -72,27 +102,7 @@ const Dashboard = () => {
       clearInterval(interval);
     };
   }, [])
-  const handleCsvFile = () => {
-    var allText = [];
-    var allTextLines = [];
-    var Lines = [];
 
-    var txtFile = new XMLHttpRequest();
-
-    txtFile.open("GET", "https://docs.google.com/spreadsheets/d/1uBLZgUGp1AdAR-SVmkycsjhYbDIuDzwz/edit#gid=1047264679", true);
-    // console.log(txtFile)
-    txtFile.onreadystatechange = function () {
-      allText = txtFile.responseText;
-      console.log(allText)
-      allTextLines = allText.split(/\r\n|\n/);
-    };
-    txtFile.onerror = function () {
-      console.log("error")
-    }
-    txtFile.onload = function (params) {
-      console.log(params)
-    }
-  }
   const handleInterval = () => {
     const hour = moment().format("HH");
     // handleFile()
@@ -100,34 +110,9 @@ const Dashboard = () => {
     min = min < 10 ? "0" + min : min
 
     var time = hour + ":" + min;
-    // console.log(time, timeInterval)
     setTimeInterval(time);
   }
-  const handleFile = () => {
 
-
-    var request = new XMLHttpRequest();
-    request.open('GET', "https://docs.google.com/spreadsheets/d/1uBLZgUGp1AdAR-SVmkycsjhYbDIuDzwz/edit#gid=1047264679", true);
-    request.responseType = 'blob';
-    const reader = new FileReader();
-    const rABS = !!reader.readAsBinaryString;
-    request.onload = function () {
-      var reader = new FileReader();
-      reader.readAsDataURL(request.response);
-      reader.onload = function (e) {
-        console.log('DataURL:', e.target.result);
-        const bstr = e.target.result;
-        const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
-
-        const wsname = wb.SheetNames[1];
-        const ws = wb.Sheets[wsname];
-
-        const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        console.log(data)
-      };
-    };
-    request.send();
-  }
   const onProtocalChange = (e) => {
     console.log(e.target.value)
     setSelectedProtocal(e.target.value)
@@ -172,30 +157,19 @@ const Dashboard = () => {
   )
 }
 
-const Reports = () => {
-  return (<div>Reports</div>)
-}
-const Analytics = () => {
-  return (<div>Analytics</div>)
-}
+
 const App = () => {
-  const [visibleLeft, setVisibleLeft] = useState(true);
+
+
   return (
     <div>
-      <Router>
-        <Sidebar visible={visibleLeft} baseZIndex={100000} style={{ width: 200, zIndex: 99 }} showCloseIcon={false}>
-          <div className="sidebar-item">
-            <Link to="/">Dashboard</Link>
-          </div>
-          <div className="sidebar-item">
-            <Link to="/Reports">Reports</Link>
-          </div>
-          <div className="sidebar-item">
-            <Link to="/Analytics">Smart Analyiser</Link>
-          </div>
-        </Sidebar>
+      <Router history={customHistory}>
+        <SideBar />
         <div>
-          <div style={{ marginLeft: 200, padding: 20 }}>
+          <div id="navHeader">
+            STA DEMO
+          </div>
+          <div style={{ marginLeft: 200, padding: 20, marginTop: 80, height: '90vh' }}>
 
             <Switch>
               <Route path="/" exact={true}>

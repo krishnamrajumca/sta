@@ -69,21 +69,69 @@ select.flat-select {
 #html {
     display: none;
 }
-.sidebar-item {
-    margin: 10px;
-    padding: 10px;
+.sidebar-item{
+    /* margin: 10px; */
+    padding: 20px 10px;
     cursor: pointer;
+    width: 100%;
+}
+.sidebar-item a{
+  color:black
+}
+.sidebar-item:hover,.sidebar-item.active{
+  color:white;
+  background-color: #459ca5;
+  border-right:5px solid red
+  
 }
 .sidebar-item a:hover{
-  color:aqua;
-  
+  color:white;
 }
 .sidebar-item a{
   text-decoration: none;
 }
 .p-sidebar{
+  padding: 0 !important;
       -webkit-box-shadow: 0px 2px 3px -1px rgb(0 0 0 / 20%), 0px 4px 8px 1px rgb(0 0 0 / 14%), 0px 1px 6px 1px rgb(0 0 0 / 12%) !important;
     box-shadow: 0px 2px 3px -1px rgb(0 0 0 / 20%), 0px 4px 8px 1px rgb(0 0 0 / 14%), 0px 1px 6px 1px rgb(0 0 0 / 12%) !important;
 }
+#navHeader{
+  height: 60px;
+    display: flex;
+    background-color: black;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+    color: white;
+    align-items: center;
+    padding-left: 20px;
+}
 
-
+.flex{
+  display: flex;
+}
+.flex-row{
+  flex-direction: row;
+  width:100%
+}
+.col-6{
+  width:50%;
+  padding:10px;
+}
+.col-4{
+  width:33.3%
+}
+.jc-center{
+  justify-content: center;
+}
+.ai-center{
+  align-items: center;
+}
+.label{
+  clear:both;
+  margin-right: 5px;
+}
+.mt-20{
+  margin-top:20px 
+}
