@@ -135,3 +135,6 @@ select.flat-select {
 .mt-20{
   margin-top:20px 
 }
+i.pi{
+  cursor: pointer;
+}

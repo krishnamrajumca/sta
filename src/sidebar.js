@@ -11,11 +11,8 @@ const SideBar = () => {
     const onClickNav = (e) => {
         var id = e.target.id;
         setActiveLink(id);
-        if (id == "Dashboard") {
-            history.push("/")
-        }
-        else
-            history.push("/" + id)
+
+        history.push("/Home/" + id)
     }
     return (
         <Sidebar visible={visibleLeft} baseZIndex={100000} style={{ width: 200, zIndex: 99 }} showCloseIcon={false}>

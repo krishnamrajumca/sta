@@ -1,43 +1,46 @@
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
-
+import { Card } from 'primereact/card'
+import { useSelector } from 'react-redux'
 const Analytics = () => {
-    const networks = ["MSC1", "MSC2"];
-    const protocals = ["MAP", "CAMEL", "BSSAP", "RANAP", "ISUP", "SIP", "BICC", "H248"];
-    const inputs = ["MSISDN", "IMSI", "SUBSCRIPTION-ID", "IMEI"]
-    const timeDurations = ["30 SEC", "1 MIN", "2 MIN", "3 MIN", "4 MIN", "% MIN"]
+
+
+
     const [protocal, setProtocal] = useState();
     const [network, setNetwork] = useState();
     const [input, setInput] = useState();
     const [timeDuration, setTimeDuration] = useState();
+    const { networks, protocals, input_crireria, timeDurations } = useSelector(state => state.metaReducer)
     return (
-        <div>
+        <div className="p-d-flex p-jc-center p-ai-center">
+            <div className="p-col-4">
+                <Card>
+                    <div className="p-grid p-col-12">
+                        <div className="p-col-12 p-mb-1  p-jc-center">
+                            <div>Input Criteria</div>
+                            <Dropdown value={input} options={input_crireria} onChange={(e) => setInput(e.target.value)} placeholder="Select Node" style={{ width: 250 }} />
+                        </div>
 
+                        <div className="p-col-12 p-mb-1  p-jc-center">
+                            <div>Node</div>
+                            <Dropdown value={network} options={networks} onChange={(e) => setNetwork(e.target.value)} placeholder="Select Node" style={{ width: 250 }} />
+                        </div>
+                        <div className="p-col-12 p-mb-1">
+                            <div>Protocal</div>
+                            <Dropdown value={protocal} options={protocals} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
+                        </div>
 
-            <div className="flex flex-row mt-20">
-                <div className="col-6 flex ai-center ">
-                    <label htmlFor="time24" className="label">Input Criteria</label>
-                    <Dropdown value={input} options={inputs} onChange={(e) => setInput(e.target.value)} placeholder="Select Input Criteria" style={{ width: 150 }} />
-                </div>
-                <div className="col-6 flex ai-center ">
-                    <label htmlFor="time24" className="label">Node Name</label>
-                    <Dropdown value={network} options={networks} onChange={(e) => setNetwork(e.target.value)} placeholder="Select Node Name" style={{ width: 150 }} />
-                </div>
-            </div>
-            <div className="flex flex-row mt-20">
-                <div className="col-6 flex ai-center ">
-                    <label htmlFor="time24" className="label">Protocal</label>
-                    <Dropdown value={protocal} options={protocals} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 150 }} />
-                </div>
-                <div className="col-6 flex ai-center ">
-                    <label htmlFor="time24" className="label">Time Duration</label>
-                    <Dropdown value={timeDuration} options={timeDurations} onChange={(e) => setTimeDuration(e.target.value)} placeholder="Select Time Duration" style={{ width: 150 }} />
-                </div>
-            </div>
-            <div className="flex flex-row jc-center" style={{ marginTop: 40, }}>
-                <Button label="START" style={{ marginRight: 20 }} />
-                <Button label="STOP" />
+                        <div className="p-col-12 p-mb-1">
+                            <div>Time Duration</div>
+                            <Dropdown value={timeDuration} options={timeDurations} onChange={(e) => setTimeDuration(e.target.value)} placeholder="Select Input Criteria" style={{ width: 250 }} />
+                        </div>
+                        <div className="p-col-12 p-mb-1" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <Button label="Start" style={{ width: 120, fontSize: 14 }}></Button>
+                            <Button label="Stop" style={{ width: 120, fontSize: 14 }}></Button>
+                        </div>
+                    </div>
+                </Card>
             </div>
         </div>
     )

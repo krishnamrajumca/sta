@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-
+import { Card } from 'primereact/card';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import dataset from './data.json'
 import SideBar from './sidebar'
+import Header from './header'
+import 'primeflex/primeflex.css';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
 import { createBrowserHistory } from "history";
-
 
 import { Dropdown } from 'primereact/dropdown';
 
@@ -21,6 +22,11 @@ import Cards from './cards/cards'
 import moment from 'moment';
 import Reports from './pages/reports';
 import Analytics from './pages/analytics'
+import Login from './pages/login'
+import { Provider } from 'react-redux';
+import StoreConfig from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react'
+
 const customHistory = createBrowserHistory();
 const Dashboard = () => {
   const [selectedProtocal, setSelectedProtocal] = useState("");
@@ -158,36 +164,52 @@ const Dashboard = () => {
 }
 
 
-const App = () => {
+const Home = () => {
 
 
   return (
     <div>
-      <Router history={customHistory}>
-        <SideBar />
-        <div>
-          <div id="navHeader">
-            STA DEMO
-          </div>
-          <div style={{ marginLeft: 200, padding: 20, marginTop: 80, height: '90vh' }}>
+      <Header />
+      <SideBar />
+      <div>
 
-            <Switch>
-              <Route path="/" exact={true}>
-                <Dashboard />
-              </Route>
-              <Route path="/Reports">
-                <Reports />
-              </Route>
-              <Route path="/Analytics">
-                <Analytics />
-              </Route>
-            </Switch>
+        <div style={{ marginLeft: 200, padding: 20, marginTop: 80, height: '90vh' }}>
 
-          </div>
+          <Route path="/Home/Dashboard" >
+            <Dashboard />
+          </Route>
+          <Route path="/Home/Reports">
+            <Reports />
+          </Route>
+          <Route path="/Home/Analytics">
+            <Analytics />
+          </Route>
+
+
         </div>
-      </Router>
+      </div>
+
     </div>
 
+  )
+}
+
+const App = () => {
+  return (
+    <Provider store={StoreConfig.store}>
+      <PersistGate loading={null} persistor={StoreConfig.persistor}>
+        <Router history={customHistory}>
+          <Switch>
+            <Route path="/Home" >
+              <Home />
+            </Route>
+            <Route path="/" exact={true}>
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
+      </PersistGate>
+    </Provider>
   )
 }
 export default App
