@@ -15,7 +15,7 @@ const Login = () => {
     const login = () => {
         if (username && password) {
             dispatch({ type: "SET_USER", username })
-            history.push("/Home");
+            history.push("/Home/Dashboard");
         }
     }
     return (
