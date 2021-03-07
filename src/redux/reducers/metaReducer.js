@@ -4,7 +4,18 @@ const initialState = {
     kpis: ["BCHI", "SRI", "BSC", "RNC", "SMS", "LU", "OCS", "GMSC", "SIP"],
     input_crireria: ["MSISDN", "IMSI", "SUBSCRIPTION-ID", "IMEI"],
     timeDurations: ["30 SEC", "1 MIN", "2 MIN", "3 MIN", "4 MIN", "5 MIN"],
-    username: ""
+    username: "",
+    msc1: {
+        first: ["AUC-Succ_Rate", "LU_Succ_Rate", "SRI_Succ_Rate", "Camel_Succ_Rate"],
+        second: ["Assign-Succ-rate", "Rab-Succ_Rate"],
+        third: ["Ho-Success-rate", "Ho-Success-rate"],
+        fourth: ["Paging Succ_rate"],
+        five: ["Paging Succ_rate"],
+        six: ["ISUP_Succ_Rate", "ISUP_Succ_Rate"],
+        seven: ["SIP_Succ_Rate", "SIP_Succ_Rate"],
+        eight: ["BICC_Succ_Rate", "BICC_Succ_Rate"],
+
+    }
 }
 
 function metaReducer(state = initialState, action) {

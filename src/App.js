@@ -20,13 +20,18 @@ import ApexChart from './charts/areaChart'
 import BarChart from './charts/barChart'
 import Cards from './cards/cards'
 import moment from 'moment';
-import Reports from './pages/reports';
-import Analytics from './pages/analytics'
-import Login from './pages/login'
+
 import { Provider } from 'react-redux';
 import StoreConfig from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react'
 
+
+import Reports from './pages/reports';
+import Analytics from './pages/analytics'
+import Login from './pages/login'
+import MSC1 from './pages/msc/msc1';
+import MSC2 from './pages/msc/msc2'
+import GMSC from './pages/msc/gmsc'
 const customHistory = createBrowserHistory();
 const Dashboard = () => {
   const [selectedProtocal, setSelectedProtocal] = useState("");
@@ -180,6 +185,16 @@ const Home = () => {
           </Route>
           <Route path="/Home/Reports">
             <Reports />
+          </Route>
+          <Route path="/Home/MSC1">
+            <MSC1 />
+          </Route>
+        
+          <Route path="/Home/MSC2">
+            <MSC2 />
+          </Route>
+          <Route path="/Home/GMSC">
+            <GMSC />
           </Route>
           <Route path="/Home/Analytics">
             <Analytics />
