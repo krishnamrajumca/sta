@@ -4,15 +4,16 @@ const mscData = dataset["MSC1"];
 export default class MSC1Data {
 
     constructor(timeSlot, slots) {
-        this.updateSlotData(timeSlot,slots);
+        this.updateSlotData(timeSlot, slots);
     }
-    updateSlotData(timeSlot, slots){
-      this.timeSlot = timeSlot;
-      this.slots = slots;
-      this.slotData = mscData.filter((d) => {
-          return d["Interval"] === timeSlot
-      });
-      console.log("constructor",this.slots, this.slotData)
+    updateSlotData(timeSlot, slots) {
+        this.timeSlot = timeSlot;
+        this.slots = slots;
+        // var preSlot = moment(timeSlot,"HH:mm").add(5,'minutes').format("HH:mm")
+        this.slotData = mscData.filter((d) => {
+            return d["Interval"] === timeSlot
+        });
+        console.log("constructor", this.slots, this.slotData)
     }
     SuccRateF(key, currentSlotData) {
         const AUCSuccRate = currentSlotData.filter(sd => sd[key])
@@ -35,13 +36,13 @@ export default class MSC1Data {
             fourthGraph: this.getFourthGraph(),
             fifthGraph: this.getFiveGraph(),
             sixthGraph: this.getSixthGraph(),
-            seventhGraph:this.getSeventhGraph(),
-            eightGraph:this.getEightGraph()
+            seventhGraph: this.getSeventhGraph(),
+            eightGraph: this.getEightGraph()
         }
     }
     getFirstGraph() {
         var obj = {
-            "Acc_Succ_Rate": { value: this.SuccRateF("AUC_Succ_Rate", this.slotData), name: "Acc Success Rate" },
+            "Acc_Succ_Rate": { value: this.SuccRateF("AUC-Succ_Rate", this.slotData), name: "Auc Success Rate" },
             "LU_Succ_Rate": { value: this.SuccRateF("LU_Succ_Rate", this.slotData), name: "LU Success Rate" },
             "SRI_Succ_Rate": { value: this.SuccRateF("SRI_Succ_Rate", this.slotData), name: "SRI Success Rate" },
             "Camel_Succ_Rate": { value: this.SuccRateF("Camel_Succ_Rate", this.slotData), name: "Camel Success Rate" },
@@ -53,7 +54,7 @@ export default class MSC1Data {
                 return d["Interval"] === s
             });
 
-            accArr.push(this.SuccRateF("AUC_Succ_Rate", currentSlot));
+            accArr.push(this.SuccRateF("AUC-Succ_Rate", currentSlot));
             luArr.push(this.SuccRateF("LU_Succ_Rate", currentSlot));
             sriArr.push(this.SuccRateF("SRI_Succ_Rate", currentSlot));
             camelArr.push(this.SuccRateF("Camel_Succ_Rate", currentSlot))
@@ -113,44 +114,34 @@ export default class MSC1Data {
     }
     getFourthGraph() {
         var obj = {
-            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slotData), name: "Paging Success Rate 2G" },
+            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging Succ_rate", this.slotData), name: "Paging Success Rate 2G" },
         }
-        let accArr = [], luArr = [];
-        var d = this.slots.map(s => {
-            let currentSlot = mscData.filter((d) => {
-                return d["Interval"] === s
-            });
 
-            accArr.push(this.SuccRateF("Paging_SUCC-Rate", currentSlot));
-
-        })
-        obj["graphData"] = accArr;
+        obj["graphData"] = {
+            data: [this.SuccRateF("Paging_req", this.slotData), this.SuccRateF("Paging_res", this.slotData)],
+            labels: ["Paging Requests", "Paging Response"]
+        }
         return obj;
     }
     getFiveGraph() {
         var obj = {
-            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slotData), name: "Paging Success Rate 2G" },
+            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging Succ_rate", this.slotData), name: "Paging Success Rate 2G" },
         }
-        let accArr = [], luArr = [];
-        var d = this.slots.map(s => {
-            let currentSlot = mscData.filter((d) => {
-                return d["Interval"] === s
-            });
 
-            accArr.push(this.SuccRateF("Paging_SUCC-Rate", currentSlot));
 
-        })
-
-        obj["graphData"] = accArr;
+        obj["graphData"] = {
+            data: [this.SuccRateF("Paging_req", this.slotData), this.SuccRateF("Paging_res", this.slotData)],
+            labels: ["Paging Requests", "Paging Response"]
+        }
         return obj;
     }
     getSixthGraph() {
         var ISUP_Succ_Rate = this.SuccRateF("ISUP_Succ_Rate", this.slotData);
         var req = this.SuccRateF("ISUP_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("ISUP_Call-Failed",this.slotData)
+        var ISUP_Call_Failed = this.SuccRateF("ISUP_Call-Failed", this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req) * 100;
         }
 
         let accArr = [], luArr = [];
@@ -163,21 +154,21 @@ export default class MSC1Data {
             var req = this.SuccRateF("ISUP_Call_Req", currentSlot);
             var ISUP_Succ_Rate_CCR = 0;
             if (req !== 0) {
-                ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", currentSlot) + this.SuccRateF("ISUP_Call-Failed", currentSlot)) / req)*100;
+                ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", currentSlot) + this.SuccRateF("ISUP_Call-Failed", currentSlot)) / req) * 100;
             }
             accArr.push(ISUP_Succ_Rate);
             luArr.push(ISUP_Succ_Rate_CCR);
         })
 
         var obj = {
-            ISUP_Succ_Rate:{name:"ISUP Success Rate",value:ISUP_Succ_Rate},
-            ISUP_Succ_Rate_CCR:{name:"ISUP Success Rate CCR",value:ISUP_Succ_Rate_CCR},
+            ISUP_Succ_Rate: { name: "ISUP Success Rate", value: ISUP_Succ_Rate },
+            ISUP_Succ_Rate_CCR: { name: "ISUP Success Rate CCR", value: ISUP_Succ_Rate_CCR },
 
             pieData: {
-              data:[ISUP_Succ_Rate_CCR,ISUP_Call_Failed],
-              labels:["ISUP_Succ_Rate_CCR","ISUP_Call_Failed"],
+                data: [ISUP_Succ_Rate_CCR, ISUP_Call_Failed],
+                labels: ["ISUP_Succ_Rate_CCR", "ISUP_Call_Failed"],
             },
-            graphData:[
+            graphData: [
                 { name: "ISUP Success Rate", data: accArr },
                 { name: "ISUP Success Rate CCR", data: luArr }
             ]
@@ -189,9 +180,9 @@ export default class MSC1Data {
         var ISUP_Succ_Rate = this.SuccRateF("SIP_Succ_Rate", this.slotData);
         var req = this.SuccRateF("SIP_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("SIP_Call-Failed",this.slotData)
+        var ISUP_Call_Failed = this.SuccRateF("SIP_Call-Failed", this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req) * 100;
         }
 
         let accArr = [], luArr = [];
@@ -204,21 +195,21 @@ export default class MSC1Data {
             var req = this.SuccRateF("SIP_Call_Req", currentSlot);
             var ISUP_Succ_Rate_CCR = 0;
             if (req !== 0) {
-                ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", currentSlot) + this.SuccRateF("SIP_Call-Failed", currentSlot)) / req)*100;
+                ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", currentSlot) + this.SuccRateF("SIP_Call-Failed", currentSlot)) / req) * 100;
             }
             accArr.push(ISUP_Succ_Rate);
             luArr.push(ISUP_Succ_Rate_CCR);
         })
 
         var obj = {
-            SIP_Succ_Rate:{name:"SIP Success Rate",value:ISUP_Succ_Rate},
-            SIP_Succ_Rate_CCR:{name:"SIP Success Rate CCR",value:ISUP_Succ_Rate_CCR},
+            SIP_Succ_Rate: { name: "SIP Success Rate", value: ISUP_Succ_Rate },
+            SIP_Succ_Rate_CCR: { name: "SIP Success Rate CCR", value: ISUP_Succ_Rate_CCR },
 
             pieData: {
-              data:[ISUP_Succ_Rate_CCR,ISUP_Call_Failed],
-              labels:["SIP_Succ_Rate_CCR","SIP_Call_Failed"],
+                data: [ISUP_Succ_Rate_CCR, ISUP_Call_Failed],
+                labels: ["SIP_Succ_Rate_CCR", "SIP_Call_Failed"],
             },
-            graphData:[
+            graphData: [
                 { name: "SIP Success Rate", data: accArr },
                 { name: "SIP Success Rate CCR", data: luArr }
             ]
@@ -230,9 +221,9 @@ export default class MSC1Data {
         var ISUP_Succ_Rate = this.SuccRateF("BICC_Succ_Rate", this.slotData);
         var req = this.SuccRateF("BICC_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("BICC_Call-Failed",this.slotData)
+        var ISUP_Call_Failed = this.SuccRateF("BICC_Call-Failed", this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", this.slotData) + ISUP_Call_Failed) / req) * 100;
         }
 
         let accArr = [], luArr = [];
@@ -245,21 +236,21 @@ export default class MSC1Data {
             var req = this.SuccRateF("BICC_Call_Req", currentSlot);
             var ISUP_Succ_Rate_CCR = 0;
             if (req !== 0) {
-                ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", currentSlot) + this.SuccRateF("BICC_Call-Failed", currentSlot)) / req)*100;
+                ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", currentSlot) + this.SuccRateF("BICC_Call-Failed", currentSlot)) / req) * 100;
             }
             accArr.push(ISUP_Succ_Rate);
             luArr.push(ISUP_Succ_Rate_CCR);
         })
 
         var obj = {
-            BICC_Succ_Rate:{name:"BICC Success Rate",value:ISUP_Succ_Rate},
-            BICC_Succ_Rate_CCR:{name:"BICC Success Rate CCR",value:ISUP_Succ_Rate_CCR},
+            BICC_Succ_Rate: { name: "BICC Success Rate", value: ISUP_Succ_Rate },
+            BICC_Succ_Rate_CCR: { name: "BICC Success Rate CCR", value: ISUP_Succ_Rate_CCR },
 
             pieData: {
-              data:[ISUP_Succ_Rate_CCR,ISUP_Call_Failed],
-              labels:["BICC_Succ_Rate_CCR","BICC_Call_Failed"],
+                data: [ISUP_Succ_Rate_CCR, ISUP_Call_Failed],
+                labels: ["BICC_Succ_Rate_CCR", "BICC_Call_Failed"],
             },
-            graphData:[
+            graphData: [
                 { name: "BICC Success Rate", data: accArr },
                 { name: "BICC Success Rate CCR", data: luArr }
             ]
