@@ -7,7 +7,7 @@ import MscCard from './MscCard'
 import MSC2Data from './msc2Data';
 let msc1 = new MSC2Data("00:00", []);
 const MSC2 = () => {
-    const [timeInterval, setTimeInterval] = useState("00:10");
+    const [timeInterval, setTimeInterval] = useState(null);
     const [slots,setSlots] = useState([])
     const [mscData,setMscData] = useState(null)
     useEffect(() => {

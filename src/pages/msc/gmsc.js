@@ -7,7 +7,7 @@ import MscCard from './MscCard'
 import GMSCData from './gmscData';
 let msc1 = new GMSCData("00:00", []);
 const GMSC = () => {
-    const [timeInterval, setTimeInterval] = useState("00:10");
+    const [timeInterval, setTimeInterval] = useState(null);
     const [slots,setSlots] = useState([])
     const [mscData,setMscData] = useState(null)
     useEffect(() => {
