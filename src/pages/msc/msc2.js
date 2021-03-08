@@ -5,6 +5,7 @@ import PieChart from '../../charts/pieChart'
 import BarChart from '../../charts/barChart'
 import MscCard from './MscCard'
 import MSC2Data from './msc2Data';
+let msc1 = new MSC2Data("00:00", []);
 const MSC2 = () => {
     const [timeInterval, setTimeInterval] = useState("00:10");
     const [slots,setSlots] = useState([])
@@ -24,10 +25,14 @@ const MSC2 = () => {
             slots.push(timeSlot)
         }
         setSlots(slots)
-        let msc1 = new MSC2Data(timeInterval, slots);
-        const msc = msc1.getData();
-        console.log("first graph",msc )
-        setMscData(msc)
+        // let msc1 = new MSC2Data(timeInterval, slots);
+        if(timeInterval){
+          msc1.updateSlotData(timeInterval,slots)
+          const msc = msc1.getData();
+          console.log("first graph",msc )
+          setMscData(msc)
+        }
+
 
     }, [timeInterval])
     const handleInterval = () => {

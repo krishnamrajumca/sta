@@ -7,13 +7,13 @@ export default class PieChart extends React.Component {
 
           this.state = {
 
-            series: this.props.data,
+            series: [],
             options: {
               chart: {
                 width: 380,
                 type: 'pie',
               },
-              labels: this.props.labels,
+              labels: [],
               responsive: [{
                 breakpoint: 480,
                 options: {
@@ -30,7 +30,30 @@ export default class PieChart extends React.Component {
 
           };
         }
+        static getDerivedStateFromProps(props,state){
+          return{
+            series: props.data,
+            options: {
+              chart: {
+                width: 380,
+                type: 'pie',
+              },
+              labels: props.labels,
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    // width: 200
+                  },
+                  legend: {
+                    position: 'bottom'
+                  }
+                }
+              }]
+            },
 
+          }
+        }
 
 
         render() {

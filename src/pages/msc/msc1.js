@@ -5,10 +5,12 @@ import PieChart from '../../charts/pieChart'
 import BarChart from '../../charts/barChart'
 import MscCard from './MscCard'
 import MSC1Data from './msc1Data';
+let msc1 = new MSC1Data("00:00",[]);
 const MSC1 = () => {
-    const [timeInterval, setTimeInterval] = useState("00:10");
+    const [timeInterval, setTimeInterval] = useState(null);
     const [slots,setSlots] = useState([])
     const [mscData,setMscData] = useState(null)
+
     useEffect(() => {
 
         // console.log("ASAS", msc1.getFirstGraph())
@@ -24,10 +26,13 @@ const MSC1 = () => {
             slots.push(timeSlot)
         }
         setSlots(slots)
-        let msc1 = new MSC1Data(timeInterval, slots);
-        const msc = msc1.getData();
-        console.log("first graph",msc )
-        setMscData(msc)
+        if(timeInterval !== null){
+          msc1.updateSlotData(timeInterval,slots)
+          const msc = msc1.getData();
+          console.log("first graph",msc )
+          setMscData(msc)
+        }
+
 
     }, [timeInterval])
     const handleInterval = () => {

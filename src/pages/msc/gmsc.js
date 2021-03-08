@@ -5,6 +5,7 @@ import PieChart from '../../charts/pieChart'
 import BarChart from '../../charts/barChart'
 import MscCard from './MscCard'
 import GMSCData from './gmscData';
+let msc1 = new GMSCData("00:00", []);
 const GMSC = () => {
     const [timeInterval, setTimeInterval] = useState("00:10");
     const [slots,setSlots] = useState([])
@@ -24,10 +25,13 @@ const GMSC = () => {
             slots.push(timeSlot)
         }
         setSlots(slots)
-        let msc1 = new GMSCData(timeInterval, slots);
-        const msc = msc1.getData();
-        console.log("first graph",msc )
-        setMscData(msc)
+        if(timeInterval){
+          msc1.updateSlotData(timeInterval,slots)
+          const msc = msc1.getData();
+          console.log("first graph",msc )
+          setMscData(msc)
+        }
+
 
     }, [timeInterval])
     const handleInterval = () => {

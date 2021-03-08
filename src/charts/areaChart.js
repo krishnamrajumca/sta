@@ -8,7 +8,7 @@ export default class ApexChart extends React.Component {
 
         this.state = {
             isexpand: false,
-            series: this.props.data,
+            series: [],
             options: {
                 chart: {
                     // height: 350,
@@ -22,7 +22,7 @@ export default class ApexChart extends React.Component {
                 },
                 xaxis: {
                     type: 'string',
-                    categories: this.props.slots
+                    categories: []
                 },
                 tooltip: {
 
@@ -32,7 +32,30 @@ export default class ApexChart extends React.Component {
 
         };
     }
+    static getDerivedStateFromProps(props, state){
+      return{
+        series:props.data,
+        options: {
+            chart: {
+                // height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                type: 'string',
+                categories: props.slots
+            },
+            tooltip: {
 
+            },
+        },
+      }
+    }
     expand = () => {
         this.setState({ isexpand: !this.state.isexpand })
     }

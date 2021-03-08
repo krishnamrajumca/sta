@@ -3,14 +3,17 @@ const mscData = dataset["GMSC"];
 
 export default class GMSCData {
 
-    constructor(timeSlot = "00:00", slots) {
-        this.timeSlot = timeSlot;
-        this.slots = slots;
-        this.slotData = mscData.filter((d) => {
-            return d["Interval"] === timeSlot
-        });
-        console.log(this.slots, this.slotData)
-    }
+  constructor(timeSlot, slots) {
+      this.updateSlotData(timeSlot,slots);
+  }
+  updateSlotData(timeSlot, slots){
+    this.timeSlot = timeSlot;
+    this.slots = slots;
+    this.slotData = mscData.filter((d) => {
+        return d["Interval"] === timeSlot
+    });
+    console.log("constructor",this.slots, this.slotData)
+  }
     SuccRateF(key, currentSlotData) {
         const AUCSuccRate = currentSlotData.filter(sd => sd[key])
 
@@ -39,8 +42,8 @@ export default class GMSCData {
     getFirstGraph() {
         var obj = {
 
-            "SRI_Succ_Rate": { value: this.SuccRateF("SRI_Succ_Rate", this.slots), name: "SRI Success Rate" },
-            "Camel_Succ_Rate": { value: this.SuccRateF("Camel_Succ_Rate", this.slots), name: "Camel Success Rate" },
+            "SRI_Succ_Rate": { value: this.SuccRateF("SRI_Succ_Rate", this.slotData), name: "SRI Success Rate" },
+            "Camel_Succ_Rate": { value: this.SuccRateF("Camel_Succ_Rate", this.slotData), name: "Camel Success Rate" },
             slots: this.slots
         };
         let accArr = [], luArr = [], sriArr = [], camelArr = [];
@@ -55,7 +58,7 @@ export default class GMSCData {
 
         })
         obj["graphData"] = [
-          
+
             { name: "SRI Success Rate", data: sriArr },
             { name: "Camel Success Rate", data: camelArr },
         ]
@@ -64,8 +67,8 @@ export default class GMSCData {
     }
     getSecondGraph() {
         var obj = {
-            "Assign_Succ_rate": { value: this.SuccRateF("Assign-Succ-rate", this.slots), name: "Assign Success Rate" },
-            "Rab_Succ_Rate": { value: this.SuccRateF("Rab-Succ_Rate", this.slots), name: "Rab Success Rate" },
+            "Assign_Succ_rate": { value: this.SuccRateF("Assign-Succ-rate", this.slotData), name: "Assign Success Rate" },
+            "Rab_Succ_Rate": { value: this.SuccRateF("Rab-Succ_Rate", this.slotData), name: "Rab Success Rate" },
         }
         let accArr = [], luArr = [];
         var d = this.slots.map(s => {
@@ -86,8 +89,8 @@ export default class GMSCData {
     getThirdGraph() {
 
         var obj = {
-            "Assign_Succ_rate": { value: this.SuccRateF("Ho-Success-rate", this.slots), name: "Ho Success Rate 2G" },
-            "Rab_Succ_Rate": { value: this.SuccRateF("Ho-Success-rate", this.slots), name: "Ho Success Rate 3G" },
+            "Assign_Succ_rate": { value: this.SuccRateF("Ho-Success-rate", this.slotData), name: "Ho Success Rate 2G" },
+            "Rab_Succ_Rate": { value: this.SuccRateF("Ho-Success-rate", this.slotData), name: "Ho Success Rate 3G" },
         }
         let accArr = [], luArr = [];
         var d = this.slots.map(s => {
@@ -107,7 +110,7 @@ export default class GMSCData {
     }
     getFourthGraph() {
         var obj = {
-            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slots), name: "Paging Success Rate 2G" },
+            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slotData), name: "Paging Success Rate 2G" },
         }
         let accArr = [], luArr = [];
         var d = this.slots.map(s => {
@@ -123,7 +126,7 @@ export default class GMSCData {
     }
     getFiveGraph() {
         var obj = {
-            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slots), name: "Paging Success Rate 2G" },
+            "Paging_SUCC_Rate": { value: this.SuccRateF("Paging_SUCC-Rate", this.slotData), name: "Paging Success Rate 2G" },
         }
         let accArr = [], luArr = [];
         var d = this.slots.map(s => {
@@ -139,12 +142,12 @@ export default class GMSCData {
         return obj;
     }
     getSixthGraph() {
-        var ISUP_Succ_Rate = this.SuccRateF("ISUP_Succ_Rate", this.slots);
-        var req = this.SuccRateF("ISUP_Call_Req", this.slots);
+        var ISUP_Succ_Rate = this.SuccRateF("ISUP_Succ_Rate", this.slotData);
+        var req = this.SuccRateF("ISUP_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("ISUP_Call-Failed",this.slots)
+        var ISUP_Call_Failed = this.SuccRateF("ISUP_Call-Failed",this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", this.slots) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("ISUP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
         }
 
         let accArr = [], luArr = [];
@@ -180,12 +183,12 @@ export default class GMSCData {
         return obj
     }
     getSeventhGraph() {
-        var ISUP_Succ_Rate = this.SuccRateF("SIP_Succ_Rate", this.slots);
-        var req = this.SuccRateF("SIP_Call_Req", this.slots);
+        var ISUP_Succ_Rate = this.SuccRateF("SIP_Succ_Rate", this.slotData);
+        var req = this.SuccRateF("SIP_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("SIP_Call-Failed",this.slots)
+        var ISUP_Call_Failed = this.SuccRateF("SIP_Call-Failed",this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", this.slots) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("SIP-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
         }
 
         let accArr = [], luArr = [];
@@ -221,12 +224,12 @@ export default class GMSCData {
         return obj
     }
     getEightGraph() {
-        var ISUP_Succ_Rate = this.SuccRateF("BICC_Succ_Rate", this.slots);
-        var req = this.SuccRateF("BICC_Call_Req", this.slots);
+        var ISUP_Succ_Rate = this.SuccRateF("BICC_Succ_Rate", this.slotData);
+        var req = this.SuccRateF("BICC_Call_Req", this.slotData);
         var ISUP_Succ_Rate_CCR = 0;
-        var ISUP_Call_Failed = this.SuccRateF("BICC_Call-Failed",this.slots)
+        var ISUP_Call_Failed = this.SuccRateF("BICC_Call-Failed",this.slotData)
         if (req !== 0) {
-            ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", this.slots) + ISUP_Call_Failed) / req)*100;
+            ISUP_Succ_Rate_CCR = ((this.SuccRateF("BICC-Call_ANS", this.slotData) + ISUP_Call_Failed) / req)*100;
         }
 
         let accArr = [], luArr = [];

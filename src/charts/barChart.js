@@ -7,7 +7,7 @@ export default class BarChart extends React.Component {
 
         this.state = {
 
-            series: this.props.data || [],
+            series:  [],
             options: {
                 chart: {
                     type: 'bar',
@@ -29,19 +29,17 @@ export default class BarChart extends React.Component {
                     colors: ['transparent']
                 },
                 xaxis: {
-                    categories: this.props.labels || [],
+                    categories:  [],
                 },
                 yaxis: {
-                    
+
                 },
                 fill: {
                     opacity: 1
                 },
                 tooltip: {
                     y: {
-                        formatter: function (val) {
-                            return "$ " + val + " thousands"
-                        }
+
                     }
                 }
             },
@@ -50,7 +48,47 @@ export default class BarChart extends React.Component {
         };
     }
 
+    static getDerivedStateFromProps(props,state){
+      return{
+        series: props.data || [],
+        options: {
+            chart: {
+                type: 'bar',
+                // height: 350
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: props.labels || [],
+            },
+            yaxis: {
 
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+
+                }
+            }
+        },
+
+      }
+    }
 
     render() {
         return (
