@@ -1,3 +1,4 @@
+
 const initialState = {
     networks: ["MSC1", "MSC2", "GMSC"],
     protocals: ["MAP", "CAMEL", "BSSAP", "RANAP", "ISUP", "SIP", "BICC", "H248"],
@@ -26,7 +27,28 @@ const initialState = {
         seven: ["SIP_Succ_Rate", "SIP_Succ_Rate"],
         eight: ["BICC_Succ_Rate", "BICC_Succ_Rate"],
 
+    },
+    thresholds: {
+        "AUC-Succ_Rate": [95, 98],
+        "LU_Succ_Rate": [95, 98],
+        "SRI-Succ_Rate": [95, 98],
+        "SMS-Mo_Succ-Rate": [50, 70],
+        "SMS-MT_Succ-Rate": [50, 70],
+        "Camel_Succ_Rate": [98, 99],
+        "Mo Call Success_%": [70, 80],
+        "MT Call Success_%": [70, 80],
+        "Assign-Succ-rate": [95, 98],
+        "Ho-Success-rate": [95, 98],
+        "Paging Succ_rate": [95, 98],
+
+        "ISUP_Succ_Rate": [45, 55],
+        "ISUP-Failed_Rate": [3, 5],
+        "SIP_Succ_Rate": [45, 55],
+        "SIP-Failed_Rate": [3, 5],
+        "BICC_Succ_Rate": [45, 55],
+        "BICC-Failed_Rate": [3, 5]
     }
+
 }
 
 function metaReducer(state = initialState, action) {

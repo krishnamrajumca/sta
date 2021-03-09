@@ -5,19 +5,20 @@ import PieChart from '../../charts/pieChart'
 import BarChart from '../../charts/barChart'
 import MscCard from './MscCard'
 import MSC1Data from './msc1Data';
-import ColorChange from '../../components/degrade'
-// import emailjs from 'emailjs-com';
 
+import { useSelector } from 'react-redux'
+import Alert from '../../components/degrade'
 
 let msc1 = new MSC1Data("00:00", []);
-let colorChange = new ColorChange();
-const MSC1 = () => {
+
+const MSC1 = (props) => {
   const [timeInterval, setTimeInterval] = useState(null);
   const [slots, setSlots] = useState([])
   const [mscData, setMscData] = useState(null)
-
+  const [colorData, setColorData] = useState([]);
+  const { thresholds } = useSelector(state => state.metaReducer);
   useEffect(() => {
-
+    console.log(props)
     const interval = setInterval(() => {
       handleInterval()
     }, 2000);
@@ -33,11 +34,11 @@ const MSC1 = () => {
     setSlots(slots)
     if (timeInterval !== null) {
       msc1.updateSlotData(timeInterval, slots)
-      colorChange.updateSlotData(timeInterval);
-      colorChange.getData("MSC1");
+
       const msc = msc1.getData();
       console.log("first graph", msc)
       setMscData(msc)
+
     }
 
 
@@ -182,7 +183,10 @@ const MSC1 = () => {
                 </div>
               </div>
             </div>
-
+            {
+              colorData.length > 0 &&
+              <Alert visible={colorData.length > 0} msc1={colorData} />
+            }
 
           </div>
           :

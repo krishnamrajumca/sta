@@ -145,10 +145,9 @@ i.pi{
 }
 .dashbaord-image{
   background: url("./images/1.png") 0 0 no-repeat;
-  background-size: 100% !important;
+  background-size: cover;
         cursor: pointer;
-        width:1000px;
-        height:700px;
+      
 }
 .p-panel .p-panel-content{
   background-color: transparent !important;

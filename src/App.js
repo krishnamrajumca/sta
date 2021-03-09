@@ -7,6 +7,7 @@ import dataset from './data.json'
 import SideBar from './sidebar'
 import Header from './header'
 import 'primeflex/primeflex.css';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -34,8 +35,11 @@ import MSC1 from './pages/msc/msc1';
 import MSC2 from './pages/msc/msc2'
 import GMSC from './pages/msc/gmsc'
 import ColorChange from './components/degrade'
-let colorChange = new ColorChange();
+import Alert from './components/Alert'
+import { useSelector } from 'react-redux';
 
+let colorChange = new ColorChange();
+// let colorChange = ColorChange.getInstance()
 const customHistory = createBrowserHistory();
 const Dashboard1 = () => {
   const [selectedProtocal, setSelectedProtocal] = useState("");
@@ -178,6 +182,13 @@ const Dashboard = () => {
   const [msc1Color, setmsc1Color] = useState("white")
   const [msc2Color, setmsc2Color] = useState("white")
   const [gmscColor, setgmscColor] = useState("white")
+  const [msc1Degrades, setMSC1Degrades] = useState([]);
+  const [msc2Degrades, setMSC2Degrades] = useState([])
+  const [gmscDegrades, setGMSCDegrades] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [height, setHeight] = useState(518);
+  const [width, setWidth] = useState(1383);
+  const { thresholds } = useSelector(state => state.metaReducer);
   let history = useHistory();
   useEffect(() => {
     console.log(selected)
@@ -188,52 +199,73 @@ const Dashboard = () => {
   useEffect(() => {
     setInterval(() => {
       const hour = moment().format("HH");
-
+      const w = window.innerWidth - 250;
+      const h = (w / 1383) * 518;
+      setWidth(w); setHeight(h);
       var min = Math.floor(parseInt(moment().format("mm")) / 5) * 5;
       min = min < 10 ? "0" + min : min
 
       var time = hour + ":" + min;
       setTime(time)
     }, 1000)
-
+    window.addEventListener('resize', handleResize)
   }, [])
+  const handleResize = () => {
+    const w = window.innerWidth - 250;
+    const h = (w / 1383) * 518;
+    setWidth(w); setHeight(h);
+  }
   useEffect(() => {
-    if (time) {
+    if (time && thresholds) {
+
       colorChange.updateSlotData(time);
-      const msc1 = colorChange.getData("MSC1");
-      const msc2 = colorChange.getData("MSC2");
-      const gmsc = colorChange.getData("GMSC");
+      const msc1 = colorChange.getData("MSC1", thresholds);
+      const msc2 = colorChange.getData("MSC2", thresholds);
+      const gmsc = colorChange.getData("GMSC", thresholds);
       console.log(msc1, msc2, gmsc)
-      setmsc1Color(msc1.length > 0 ? "red" : "white")
-      setmsc2Color(msc2.length > 0 ? "red" : "white")
-      setgmscColor(gmsc.length > 0 ? "red" : "white")
+
+      setmsc1Color(msc1.color)
+      setmsc2Color(msc2.color)
+      setgmscColor(gmsc.color)
+
+      if (msc1.degradeFileds.length > 0 || msc2.degradeFileds.length > 0 || gmsc.degradeFileds.length) {
+        setMSC1Degrades(msc1.degradeFileds);
+        setMSC2Degrades(msc2.degradeFileds);
+        setGMSCDegrades(gmsc.degradeFileds);
+        setShowAlert(true)
+      }
     }
 
   }, [time])
+  console.log(msc1Degrades, msc2Degrades, gmscDegrades, "In App")
   return (
-    <div className="p-col-12">
-      <div className="p-col-12 flex-row-wrap">
+    <div className="p-col-12 " style={{ position: 'relative' }}>
+      <div className="p-col-12">
+        <div className="dashbaord-image" style={{ width: width, height: height }} />
+      </div>
+      <div className="p-col-12 flex-row-wrap" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
         <div className="p-col-2" onClick={() => history.push("/Home/MSC1")}>
-          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc1Color }} >
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc1Color, borderRadius: 10 }} >
             MSC1
           </Panel>
         </div>
 
         <div className="p-col-2" onClick={() => history.push("/Home/MSC2")}>
-          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc2Color }}>
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc2Color, borderRadius: 10 }}>
             MSC2
           </Panel>
         </div>
 
         <div className="p-col-2" onClick={() => history.push("/Home/GMSC")}>
-          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: gmscColor }} onClick={() => history.push("/Home/GMSC")}>
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: gmscColor, borderRadius: 10 }} onClick={() => history.push("/Home/GMSC")}>
             GMSC
           </Panel>
         </div>
       </div>
-      <div className="p-col-12">
-        <div className="dashbaord-image" />
-      </div>
+      {
+        showAlert &&
+        <Alert visible={showAlert} msc1={msc1Degrades} msc2={msc2Degrades} gmsc={gmscDegrades} onClose={() => setShowAlert(false)} />
+      }
     </div>
   )
 }
@@ -259,7 +291,7 @@ const Home = () => {
             <MSC1 />
           </Route>
 
-          <Route path="/Home/MSC2">
+          <Route path="/Home/MSC2" >
             <MSC2 />
           </Route>
           <Route path="/Home/GMSC">

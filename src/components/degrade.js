@@ -3,7 +3,18 @@ import dataset from '../data.json'
 export default class ColorChange {
 
     constructor() {
-        // this.updateSlotData(timeSlot);
+        // super();
+        if (!ColorChange._instance) {
+            ColorChange._instance = this;
+        }
+        return ColorChange._instance;
+    }
+    static getInstance() {
+        // if (!ColorChange._instance) {
+        //     ColorChange._instance = ColorChange;
+        // }
+        // return ColorChange._instance;
+        return this._instance;
     }
     updateSlotData(timeSlot) {
         this.timeSlot = timeSlot;
@@ -25,7 +36,7 @@ export default class ColorChange {
             return d["Interval"] === timeSlot
         })
     }
-    getData(protocal) {
+    getData(protocal, thresholds) {
         let degradeFileds = [];
         // console.log(this.msc1Data)
         let data = [];
@@ -38,21 +49,46 @@ export default class ColorChange {
         else if (protocal == "GMSC") {
             data = this.msc1Data
         }
+        let have_red = false;
+        let have_orange = false;
         data.map(row => {
             // console.log(row);
+
             for (var field in row) {
                 if (this.notIncludeFields.indexOf(field) == -1) {
-                    if (field.indexOf("Rate") !== -1) {
+                    if (field.indexOf("Rate") !== -1 || field.indexOf("rate") !== -1 || field.indexOf("%") !== -1) {
+
                         const value = Math.round(row[field] * 100) / 100;
-                        if (value < 95) {
-                            degradeFileds.push({ protocal: row["Protocol"], field: field, value: value })
+                        const threshold = thresholds[field];
+                        if (threshold) {
+                            if (value >= threshold[0] && value <= thresholds[1]) {
+                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'orange' })
+                                have_orange = true
+                            }
+                            else if (value < threshold[0]) {
+                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'red' })
+                                have_red = true;
+                            }
                         }
+
                     }
 
                 }
             }
         })
-        return degradeFileds
+        var obj = {
+            degradeFileds
+        }
+        if (have_red) {
+            obj["color"] = "red"
+        }
+        else if (have_orange) {
+            obj["color"] = "orange"
+        }
+        else {
+            obj["color"] = "white"
+        }
+        return obj
     }
 
 }

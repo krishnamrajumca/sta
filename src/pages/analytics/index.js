@@ -12,10 +12,14 @@ const Analytics = () => {
     const [input, setInput] = useState();
     const [isStart, setStart] = useState(false);
     const [timeDuration, setTimeDuration] = useState();
+    const [isStoped, setStoped] = useState(false)
     const { networks, protocals, input_crireria, timeDurations } = useSelector(state => state.metaReducer)
     const start = () => {
-        if (protocal && networks && input && timeDuration)
-            setStart(true)
+        if (protocal && networks && input && timeDuration) {
+            setStart(true);
+            setStoped(false);
+        }
+
     }
     return (
         <div className="p-d-flex p-jc-center p-ai-center">
@@ -42,11 +46,11 @@ const Analytics = () => {
                         </div>
                         <div className="p-col-12 p-mb-1" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Button label="Start" style={{ width: 120, fontSize: 14, backgroundColor: isStart ? 'green' : 'blue' }} onClick={start}></Button>
-                            <Button label="Stop" style={{ width: 120, fontSize: 14, backgroundColor: isStart ? 'red' : 'blue' }} onClick={() => setStart(false)}></Button>
+                            <Button label="Stop" style={{ width: 120, fontSize: 14, backgroundColor: isStart ? 'red' : 'blue' }} onClick={() => { setStart(false); setStoped(true) }}></Button>
                         </div>
                         <div className="p-col-12 p-mb-2  p-jc-center" style={{ textAlign: 'center' }}>
                             {
-                                isStart && <span>Open File</span>
+                                isStoped && <span>Open File</span>
                             }
                         </div>
                     </div>
