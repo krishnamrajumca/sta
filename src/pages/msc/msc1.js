@@ -5,7 +5,12 @@ import PieChart from '../../charts/pieChart'
 import BarChart from '../../charts/barChart'
 import MscCard from './MscCard'
 import MSC1Data from './msc1Data';
+import ColorChange from '../../components/degrade'
+// import emailjs from 'emailjs-com';
+
+
 let msc1 = new MSC1Data("00:00", []);
+let colorChange = new ColorChange("00:00");
 const MSC1 = () => {
   const [timeInterval, setTimeInterval] = useState(null);
   const [slots, setSlots] = useState([])
@@ -13,11 +18,11 @@ const MSC1 = () => {
 
   useEffect(() => {
 
-    // console.log("ASAS", msc1.getFirstGraph())
     const interval = setInterval(() => {
       handleInterval()
     }, 2000);
   }, [])
+
   useEffect(() => {
     var times = moment(timeInterval, "HH:mm").subtract(1, "hours");
     var slots = [];
@@ -28,6 +33,8 @@ const MSC1 = () => {
     setSlots(slots)
     if (timeInterval !== null) {
       msc1.updateSlotData(timeInterval, slots)
+      colorChange.updateSlotData(timeInterval);
+      colorChange.getMSC1Data();
       const msc = msc1.getData();
       console.log("first graph", msc)
       setMscData(msc)

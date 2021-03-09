@@ -10,8 +10,13 @@ const Analytics = () => {
     const [protocal, setProtocal] = useState();
     const [network, setNetwork] = useState();
     const [input, setInput] = useState();
+    const [isStart, setStart] = useState(false);
     const [timeDuration, setTimeDuration] = useState();
     const { networks, protocals, input_crireria, timeDurations } = useSelector(state => state.metaReducer)
+    const start = () => {
+        if (protocal && networks && input && timeDuration)
+            setStart(true)
+    }
     return (
         <div className="p-d-flex p-jc-center p-ai-center">
             <div className="p-col-4">
@@ -36,8 +41,13 @@ const Analytics = () => {
                             <Dropdown value={timeDuration} options={timeDurations} onChange={(e) => setTimeDuration(e.target.value)} placeholder="Select Input Criteria" style={{ width: 250 }} />
                         </div>
                         <div className="p-col-12 p-mb-1" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                            <Button label="Start" style={{ width: 120, fontSize: 14 }}></Button>
-                            <Button label="Stop" style={{ width: 120, fontSize: 14 }}></Button>
+                            <Button label="Start" style={{ width: 120, fontSize: 14, backgroundColor: isStart ? 'green' : 'blue' }} onClick={start}></Button>
+                            <Button label="Stop" style={{ width: 120, fontSize: 14, backgroundColor: isStart ? 'red' : 'blue' }} onClick={() => setStart(false)}></Button>
+                        </div>
+                        <div className="p-col-12 p-mb-2  p-jc-center" style={{ textAlign: 'center' }}>
+                            {
+                                isStart && <span>Open File</span>
+                            }
                         </div>
                     </div>
                 </Card>

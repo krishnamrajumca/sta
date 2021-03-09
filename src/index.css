@@ -143,3 +143,10 @@ select.flat-select {
 i.pi{
   cursor: pointer;
 }
+.dashbaord-image{
+  background: url("./images/1.png") 0 0 no-repeat;
+  background-size: 100% !important;
+        cursor: pointer;
+        width:690px;
+        height:259px;
+}

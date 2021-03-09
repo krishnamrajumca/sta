@@ -1,7 +1,18 @@
 const initialState = {
-    networks: ["MSC1", "MSC2"],
+    networks: ["MSC1", "MSC2", "GMSC"],
     protocals: ["MAP", "CAMEL", "BSSAP", "RANAP", "ISUP", "SIP", "BICC", "H248"],
     kpis: ["BCHI", "SRI", "BSC", "RNC", "SMS", "LU", "OCS", "GMSC", "SIP"],
+    kpisList: [
+        { id: "BCHI", key: "BICC_Succ_Rate" },
+        { id: "SRI", key: "SRI_Succ_Rate" },
+        { id: "BSC", key: "BSC" },
+        { id: "RNC", key: "RNC" },
+        { id: "SMS", key: "SMS-Mo_Succ-Rate" },
+        { id: "LU", key: "LU_Succ_Rate" },
+        { id: "OCS", key: "OCS" },
+        { id: "GMSC", key: "GMSC" },
+        { id: "SIP", key: "SIP_Succ_Rate" }
+    ],
     input_crireria: ["MSISDN", "IMSI", "SUBSCRIPTION-ID", "IMEI"],
     timeDurations: ["30 SEC", "1 MIN", "2 MIN", "3 MIN", "4 MIN", "5 MIN"],
     username: "",

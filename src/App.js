@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from 'primereact/card';
+
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
@@ -10,12 +10,13 @@ import 'primeflex/primeflex.css';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useHistory
 } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 import { Dropdown } from 'primereact/dropdown';
-
+import { RadioButton } from 'primereact/radiobutton';
 import ApexChart from './charts/areaChart'
 import BarChart from './charts/barChart'
 import Cards from './cards/cards'
@@ -24,7 +25,7 @@ import moment from 'moment';
 import { Provider } from 'react-redux';
 import StoreConfig from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react'
-
+import { Card } from 'primereact/card';
 
 import Reports from './pages/reports';
 import Analytics from './pages/analytics'
@@ -32,8 +33,9 @@ import Login from './pages/login'
 import MSC1 from './pages/msc/msc1';
 import MSC2 from './pages/msc/msc2'
 import GMSC from './pages/msc/gmsc'
+
 const customHistory = createBrowserHistory();
-const Dashboard = () => {
+const Dashboard1 = () => {
   const [selectedProtocal, setSelectedProtocal] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState("")
@@ -168,6 +170,42 @@ const Dashboard = () => {
   )
 }
 
+const Dashboard = () => {
+  const [selected, setSelected] = useState(null)
+  let history = useHistory();
+  useEffect(() => {
+    console.log(selected)
+    if (selected) {
+      history.push("/Home/" + selected)
+    }
+  }, [selected])
+  return (
+    <div className="p-col-12">
+      <div className="p-col-12 flex-row-wrap">
+        <div className="p-col-2 mlr-3" onClick={() => history.push("/Home/MSC1")}>
+          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }} >
+            MSC1
+          </Card>
+        </div>
+
+        <div className="p-col-2" onClick={() => history.push("/Home/MSC2")}>
+          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }}>
+            MSC2
+          </Card>
+        </div>
+
+        <div className="p-col-2" onClick={() => history.push("/Home/GMSC")}>
+          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }} onClick={() => history.push("/Home/GMSC")}>
+            GMSC
+          </Card>
+        </div>
+      </div>
+      <div className="p-col-12">
+        <div className="dashbaord-image" />
+      </div>
+    </div>
+  )
+}
 
 const Home = () => {
 
@@ -189,7 +227,7 @@ const Home = () => {
           <Route path="/Home/MSC1">
             <MSC1 />
           </Route>
-        
+
           <Route path="/Home/MSC2">
             <MSC2 />
           </Route>

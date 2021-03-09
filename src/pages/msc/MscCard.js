@@ -12,8 +12,8 @@ const MscCard = ({ data, prefix = "" }) => {
   return (
     <div className="p-col-12" style={{ padding: 5 }}>
       <Card>
-        <div style={{ fontSize: 16, fontWeight: 'bold', color: "#999", marginBottom: 40 }}>{data.name}</div>
-        <div style={{ fontSize: 24, fontWeight: 'bold', color: color, textAlign: 'right' }} >{data.value}{prefix}</div>
+        <div style={{ fontSize: 20, fontWeight: 'bold', color: "#333", marginBottom: 40 }}>{data.name}</div>
+        <div style={{ fontSize: 30, fontWeight: 'bold', color: color, textAlign: 'right' }} >{data.value}{prefix}</div>
       </Card>
     </div>
   )

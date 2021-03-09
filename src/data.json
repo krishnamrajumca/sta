@@ -1110,7 +1110,7 @@
             "Start Time": "1/1/21",
             "Interval": "00:05",
             "End Time": "1/1/21",
-            "Node Name": "MSC1",
+            "Node Name": "MSC2",
             "Access_Type": "GERAN",
             "Protocol": "MAP",
             "SMS_MO_req ": "5000",
