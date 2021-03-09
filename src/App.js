@@ -14,7 +14,7 @@ import {
   useHistory
 } from "react-router-dom";
 import { createBrowserHistory } from "history";
-
+import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { RadioButton } from 'primereact/radiobutton';
 import ApexChart from './charts/areaChart'
@@ -33,6 +33,8 @@ import Login from './pages/login'
 import MSC1 from './pages/msc/msc1';
 import MSC2 from './pages/msc/msc2'
 import GMSC from './pages/msc/gmsc'
+import ColorChange from './components/degrade'
+let colorChange = new ColorChange();
 
 const customHistory = createBrowserHistory();
 const Dashboard1 = () => {
@@ -172,6 +174,10 @@ const Dashboard1 = () => {
 
 const Dashboard = () => {
   const [selected, setSelected] = useState(null)
+  const [time, setTime] = useState(null)
+  const [msc1Color, setmsc1Color] = useState("white")
+  const [msc2Color, setmsc2Color] = useState("white")
+  const [gmscColor, setgmscColor] = useState("white")
   let history = useHistory();
   useEffect(() => {
     console.log(selected)
@@ -179,25 +185,50 @@ const Dashboard = () => {
       history.push("/Home/" + selected)
     }
   }, [selected])
+  useEffect(() => {
+    setInterval(() => {
+      const hour = moment().format("HH");
+
+      var min = Math.floor(parseInt(moment().format("mm")) / 5) * 5;
+      min = min < 10 ? "0" + min : min
+
+      var time = hour + ":" + min;
+      setTime(time)
+    }, 1000)
+
+  }, [])
+  useEffect(() => {
+    if (time) {
+      colorChange.updateSlotData(time);
+      const msc1 = colorChange.getData("MSC1");
+      const msc2 = colorChange.getData("MSC2");
+      const gmsc = colorChange.getData("GMSC");
+      console.log(msc1, msc2, gmsc)
+      setmsc1Color(msc1.length > 0 ? "red" : "white")
+      setmsc2Color(msc2.length > 0 ? "red" : "white")
+      setgmscColor(gmsc.length > 0 ? "red" : "white")
+    }
+
+  }, [time])
   return (
     <div className="p-col-12">
       <div className="p-col-12 flex-row-wrap">
-        <div className="p-col-2 mlr-3" onClick={() => history.push("/Home/MSC1")}>
-          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }} >
+        <div className="p-col-2" onClick={() => history.push("/Home/MSC1")}>
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc1Color }} >
             MSC1
-          </Card>
+          </Panel>
         </div>
 
         <div className="p-col-2" onClick={() => history.push("/Home/MSC2")}>
-          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }}>
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: msc2Color }}>
             MSC2
-          </Card>
+          </Panel>
         </div>
 
         <div className="p-col-2" onClick={() => history.push("/Home/GMSC")}>
-          <Card className="flex-row-wrap jc-center ai-center" style={{ height: 100, width: 100, fontWeight: 'bold', fontSize: 26 }} onClick={() => history.push("/Home/GMSC")}>
+          <Panel className="flex-row-wrap jc-center ai-center" style={{ height: 50, width: 100, fontWeight: 'bold', backgroundColor: gmscColor }} onClick={() => history.push("/Home/GMSC")}>
             GMSC
-          </Card>
+          </Panel>
         </div>
       </div>
       <div className="p-col-12">

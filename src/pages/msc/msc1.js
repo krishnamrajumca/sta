@@ -10,7 +10,7 @@ import ColorChange from '../../components/degrade'
 
 
 let msc1 = new MSC1Data("00:00", []);
-let colorChange = new ColorChange("00:00");
+let colorChange = new ColorChange();
 const MSC1 = () => {
   const [timeInterval, setTimeInterval] = useState(null);
   const [slots, setSlots] = useState([])
@@ -34,7 +34,7 @@ const MSC1 = () => {
     if (timeInterval !== null) {
       msc1.updateSlotData(timeInterval, slots)
       colorChange.updateSlotData(timeInterval);
-      colorChange.getMSC1Data();
+      colorChange.getData("MSC1");
       const msc = msc1.getData();
       console.log("first graph", msc)
       setMscData(msc)
