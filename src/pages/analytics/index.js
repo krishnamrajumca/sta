@@ -50,7 +50,7 @@ const Analytics = () => {
                         </div>
                         <div className="p-col-12 p-mb-2  p-jc-center" style={{ textAlign: 'center' }}>
                             {
-                                isStoped && <span>Open File</span>
+                                (isStoped || true) && <a target="_blank" href="Mo_call_220.pcap">Open File</a>
                             }
                         </div>
                     </div>
