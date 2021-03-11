@@ -37,7 +37,7 @@ const Analytics = () => {
                         </div>
                         <div className="p-col-12 p-mb-1">
                             <div>Protocal</div>
-                            <Dropdown value={protocal} options={protocals} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
+                            <Dropdown value={protocal} options={["All"].concat(protocals)} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
                         </div>
 
                         <div className="p-col-12 p-mb-1">
@@ -50,7 +50,7 @@ const Analytics = () => {
                         </div>
                         <div className="p-col-12 p-mb-2  p-jc-center" style={{ textAlign: 'center' }}>
                             {
-                                (isStoped || true) && <span onClick ={(event) => { event.preventDefault(); window.open("../../Mo.pcap"); }}>Open File</span>
+                                isStoped  && <span onClick ={(event) => { event.preventDefault(); window.open("../../Mo.pcap"); }}>Open File</span>
                             }
                         </div>
                     </div>

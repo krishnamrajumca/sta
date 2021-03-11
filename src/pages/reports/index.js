@@ -224,12 +224,11 @@ const Reports = () => {
 
             <div className="p-col-12">
             {
-              filterData.length > 0 ?
+              filterData.length > 0 &&
               <DataTable value={filterData}>
                   {dynamicColumns}
               </DataTable>
-              :
-              <div>No Data Found</div>
+
             }
             </div>
         </div>
