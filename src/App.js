@@ -36,145 +36,11 @@ import MSC2 from './pages/msc/msc2'
 import GMSC from './pages/msc/gmsc'
 import ColorChange from './components/degrade'
 import Alert from './components/Alert'
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 let colorChange = new ColorChange();
 // let colorChange = ColorChange.getInstance()
 const customHistory = createBrowserHistory();
-const Dashboard1 = () => {
-  const [selectedProtocal, setSelectedProtocal] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  const [selectedNetwork, setSelectedNetwork] = useState("")
-  const [timeInterval, setTimeInterval] = useState("00:00");
-  const timeslace = 5;
-  const data = [{
-    name: 'series1',
-    data: [31, 40, 28, 51, 42, 109, 100]
-  }, {
-    name: 'series2',
-    data: [11, 32, 45, 32, 34, 52, 41]
-  },
-  {
-    name: 'series3',
-    data: [41, 21, 55, 22, 31, 52, 141]
-  }]
-  const notInclue = ["Start Time", "Interval", "End Time", "Node Name", "Access_Type", "Protocol"]
-  const protocals = ["MAP", "CAMEL", "BSSAP", "RANAP", "ISUP", "SIP", "BICC", "H248"];
-  const networks = ["MSC1", "MSC2"]
-  useEffect(() => {
-    console.log(timeInterval, selectedProtocal)
-    if (selectedProtocal !== "" && selectedNetwork !== "") {
-      var mscData = dataset[selectedNetwork];
-      setCradsData(mscData);
-      setGraphData(mscData)
-    }
-  }, [timeInterval, selectedProtocal, selectedNetwork])
-  const setGraphData = (mscData) => {
-    var times = moment(timeInterval, "HH:mm").subtract(1, "hours");
-    var slots = [];
-    for (var i = 0; i < 12; i++) {
-      var timeSlot = times.add(5, "minutes").format("HH:mm");
-      slots.push(timeSlot)
-    }
-    protocals.map(proc => {
-      var obj = { name: proc };
-      var arr = [];
-      slots.map(slot => {
-        const data = mscData.filter((d) => {
-          return d["Interval"] === slot && d["Protocol"] === proc
-        });
-        if (data.length > 0) {
-
-        }
-      })
-    })
-    console.log(times)
-  }
-  const setCradsData = (mscData) => {
-    console.log(timeInterval, selectedProtocal)
-    const data = mscData.filter((d) => {
-      // console.log(d);
-      return d["Interval"] === timeInterval && d["Protocol"] === selectedProtocal
-    });
-    var temp = [];
-    if (data.length > 0) {
-
-      var row = data[0];
-      for (const property in row) {
-        if (notInclue.indexOf(property) === -1) {
-          temp.push({ name: property, value: row[property] })
-        }
-
-      }
-
-    }
-    setFilteredData(temp);
-    console.log(data)
-  }
-  useEffect(() => {
-
-    const interval = setInterval(() => {
-      handleInterval()
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [])
-
-  const handleInterval = () => {
-    const hour = moment().format("HH");
-    // handleFile()
-    var min = Math.floor(parseInt(moment().format("mm")) / timeslace) * timeslace;
-    min = min < 10 ? "0" + min : min
-
-    var time = hour + ":" + min;
-    setTimeInterval(time);
-  }
-
-  const onProtocalChange = (e) => {
-    console.log(e.target.value)
-    setSelectedProtocal(e.target.value)
-  }
-  const onNetworkChange = (e) => {
-    setSelectedNetwork(e.target.value);
-  }
-  return (
-    <div>
-      <div className="p-grid">
-        <div className="p-col-12">
-          <div className="p-col-6" style={{ display: 'flex', flexDirection: 'row', width: '33%', minWidth: 350, maxWidth: 400, marginBottom: 30 }}>
-            <div className="p-col-6" style={{ marginRight: 20 }}>
-              <Dropdown value={selectedNetwork} options={networks} onChange={onNetworkChange} placeholder="Select Network" style={{ width: 150 }} />
-            </div>
-            <div className="p-col-6">
-              <Dropdown value={selectedProtocal} options={protocals} onChange={onProtocalChange} placeholder="Select Protocal" style={{ width: 150 }} />
-            </div>
-          </div>
-        </div>
-        <div className="p-col-12">
-          <Cards filteredData={filteredData} />
-        </div>
-        <div className="p-col-12">
-          <ApexChart data={data} />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 30, width: '100%' }}>
-          <div style={{ width: '30%' }}>
-            <ApexChart height={200} data={[data[0], data[1]]} />
-          </div>
-          <div style={{ width: '30%' }} >
-            <ApexChart height={200} data={[data[2], data[0]]} />
-          </div>
-          <div style={{ width: '30%' }}>
-            <BarChart height={200} />
-          </div>
-        </div>
-      </div>
-    </div>
-
-  )
-}
 
 const Dashboard = () => {
   const [selected, setSelected] = useState(null)
@@ -188,8 +54,10 @@ const Dashboard = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [height, setHeight] = useState(518);
   const [width, setWidth] = useState(1383);
-  const { thresholds } = useSelector(state => state.metaReducer);
+  const { thresholds,alertAcknowledged } = useSelector(state => state.metaReducer);
+  const dispatch = useDispatch()
   let history = useHistory();
+  console.log("alertAcknowledged",alertAcknowledged)
   useEffect(() => {
     console.log(selected)
     if (selected) {
@@ -215,6 +83,10 @@ const Dashboard = () => {
     const h = (w / 1383) * 518;
     setWidth(w); setHeight(h);
   }
+  const onClose = (e)=>{
+    setShowAlert(false);
+    dispatch({type:"ALERT_ACK",payload:e})
+  }
   useEffect(() => {
     if (time && thresholds) {
 
@@ -232,7 +104,10 @@ const Dashboard = () => {
         setMSC1Degrades(msc1.degradeFileds);
         setMSC2Degrades(msc2.degradeFileds);
         setGMSCDegrades(gmsc.degradeFileds);
-        setShowAlert(true)
+        if(alertAcknowledged.indexOf(time) == -1){
+          setShowAlert(true)
+        }
+
       }
     }
 
@@ -264,7 +139,7 @@ const Dashboard = () => {
       </div>
       {
         showAlert &&
-        <Alert visible={showAlert} msc1={msc1Degrades} msc2={msc2Degrades} gmsc={gmscDegrades} onClose={() => setShowAlert(false)} />
+        <Alert visible={showAlert} msc1={msc1Degrades} msc2={msc2Degrades} gmsc={gmscDegrades} onClose={onClose} time={time}/>
       }
     </div>
   )

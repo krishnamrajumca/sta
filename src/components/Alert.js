@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 
-const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose }) => {
+const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time="" }) => {
 
     const [msc1Data, setMsc1Data] = useState([]);
     const [msc2Data, setMsc2Data] = useState([]);
@@ -44,7 +44,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose }) =>
 
         return (
             <div>
-                <Button label="Close" icon="pi pi-check" onClick={onClose} autoFocus disabled={!isEnable} />
+                <Button label="Close" icon="pi pi-check" onClick={()=>onClose(time)} autoFocus disabled={!isEnable} />
             </div>
         );
     }

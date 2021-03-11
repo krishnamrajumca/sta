@@ -47,7 +47,8 @@ const initialState = {
         "SIP-Failed_Rate": [3, 5],
         "BICC_Succ_Rate": [45, 55],
         "BICC-Failed_Rate": [3, 5]
-    }
+    },
+    alertAcknowledged:[]
 
 }
 
@@ -55,6 +56,8 @@ function metaReducer(state = initialState, action) {
     switch (action.type) {
         case "SET_USER":
             return { ...state, username: action.username }
+        case "ALERT_ACK":
+          return {...state,alertAcknowledged:[...state.alertAcknowledged,action.payload]}
         default:
             return { ...state }
     }
