@@ -3,6 +3,7 @@ import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { Card } from 'primereact/card'
 import { useSelector } from 'react-redux'
+import { InputText } from 'primereact/inputtext';
 const Analytics = () => {
 
 
@@ -10,6 +11,7 @@ const Analytics = () => {
     const [protocal, setProtocal] = useState();
     const [network, setNetwork] = useState();
     const [input, setInput] = useState();
+    const [inputValue,setInputValue] = useState("");
     const [isStart, setStart] = useState(false);
     const [timeDuration, setTimeDuration] = useState();
     const [isStoped, setStoped] = useState(false)
@@ -30,7 +32,10 @@ const Analytics = () => {
                             <div>Input Criteria</div>
                             <Dropdown value={input} options={input_crireria} onChange={(e) => setInput(e.target.value)} placeholder="Select Node" style={{ width: 250 }} />
                         </div>
-
+                        <div className="p-col-12 p-mb-1 p-jc-center">
+                          <div>Input</div>
+                          <InputText value={inputValue} onChange={(e) => setInputValue(e.target.value)} style={{width:250}}/>
+                        </div>
                         <div className="p-col-12 p-mb-1  p-jc-center">
                             <div>Node</div>
                             <Dropdown value={network} options={networks} onChange={(e) => setNetwork(e.target.value)} placeholder="Select Node" style={{ width: 250 }} />

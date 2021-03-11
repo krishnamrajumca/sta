@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-
+import moment from 'moment'
 const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time="" }) => {
 
     const [msc1Data, setMsc1Data] = useState([]);
@@ -56,10 +56,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         msc1Data.map((m, index) => {
                             return (
-                                <div className="p-col-12" key={index} style={{ padding: 10, marginBottom: 10, backgroundColor: m.color, borderRadius: 10, color: 'white' }}>
-                                    MSC1  KPI:<span style={{ fontWeight: 'bold' }}>{m.field}</span> is beging degraded to below threshold value KPI value:<span style={{ fontWeight: 'bold' }}>{m.value}</span>
-                                    <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={() => ackMSC('msc1', index)}>Acknowledge</div>
-                                </div>
+                              <Msg key={index} field={m.field} msc="MSC1" time={time} value={m.value} onClick={() => ackMSC('msc1', index)} color={m.color}/>
                             )
                         })
                     }
@@ -71,10 +68,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         msc2Data.map((m, index) => {
                             return (
-                                <div className="p-col-12" key={index} style={{ padding: 10, marginBottom: 10, backgroundColor: m.color, borderRadius: 10, color: 'white' }}>
-                                    MSC2  KPI:<span style={{ fontWeight: 'bold' }}>{m.field}</span> is beging degraded to below threshold value KPI value:<span style={{ fontWeight: 'bold' }}>{m.value}</span>
-                                    <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={() => ackMSC('msc2', index)}>Acknowledge</div>
-                                </div>
+                                <Msg key={index} field={m.field} msc="MSC2" time={time} value={m.value} onClick={() => ackMSC('msc2', index)} color={m.color}/>
                             )
                         })
                     }
@@ -86,10 +80,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         gmscData.map((m, index) => {
                             return (
-                                <div className="p-col-12" key={index} style={{ padding: 10, marginBottom: 10, backgroundColor: m.color, borderRadius: 10, color: 'white' }}>
-                                    GMSC  KPI:<span style={{ fontWeight: 'bold' }}>{m.field}</span> is beging degraded to below threshold value KPI value:<span style={{ fontWeight: 'bold' }}>{m.value}</span>
-                                    <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={() => ackMSC('gmsc', index)}>Acknowledge</div>
-                                </div>
+                              <Msg key={index} field={m.field} msc="GMSC" time={time} value={m.value} onClick={() => ackMSC('gmsc', index)} color={m.color}/>
                             )
                         })
                     }
@@ -97,5 +88,20 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
             }
         </Dialog>
     )
+}
+const Msg = ({field,msc,time,value,onClick,color}) =>{
+  const onAck =()=>{
+    console.log("onAck");
+    onClick();
+  }
+  return(
+    <div className="p-col-12"  style={{ padding: 10, marginBottom: 10, backgroundColor: color, borderRadius: 10, color: 'white' }}>
+        <div>ALERT :GMSC {field} Degreded to Below threshold value</div>
+        <div>Start Time: {moment().format("DD/MM/YYYY")} {time} KPI value :{value}%</div>
+        <div>Probable reason: No response from VMSC/HLR</div>
+        <div>Analytic Views: 5 times occured in last 30 days</div>
+        <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={onAck}>Acknowledge</div>
+    </div>
+  )
 }
 export default Alert;
