@@ -21,13 +21,18 @@ const Reports = () => {
     const [filterData, setFilterData] = useState([])
     const { networks, protocals, kpis, kpisList } = useSelector(state => state.metaReducer)
     console.log("counter", moment(startTime).format("HH:mm"), moment(endTime).format("HH:mm"), kpis)
+    const reset = ()=>{
+      setStartTime("");
+      setEndTime("");
+
+    }
     const submit = () => {
         if (startTime && endTime && network) {
             const st = roundedTime(startTime);
             const end = roundedTime(endTime);
             const mscData = dataset[network];
             console.log("network data", mscData, st, end)
-            const filtered = mscData.filter(m => m["Interval"] >= st && m["Interval"] <= end)
+            const filtered = mscData.filter(m => m["Interval"] >= st && m["End Interval"] <= end)
             console.log("filtered", filtered)
             if (protocal || kpi) {
                 if (protocal) {
@@ -49,12 +54,20 @@ const Reports = () => {
     }
 
     const getColumnsOfKpi = (data) => {
-        const columns = ["Start Time", "Interval", "End Time"];
+        const columns = ["Start Time", "Interval", "End Time","End Interval"];
+        data.map(d=>{
+
+        })
         data.map(d => {
             for (var cl in d) {
                 if (cl.indexOf(kpi) !== -1) {
-                    if (columns.indexOf(cl) == -1)
-                        columns.push(cl);
+
+                    if (columns.indexOf(cl) == -1){
+                      columns.push(cl);
+                    }
+                    if(!isNaN(d[cl])){
+                      d[cl] = Math.floor(parseFloat(d[cl])*100)/100
+                    }
                 }
             }
         })
@@ -66,15 +79,18 @@ const Reports = () => {
         setFilterData(data);
     }
     const getColumnsOfProtocal = (data) => {
-        const columns = ["Start Time", "Interval", "End Time"];
+        const columns = ["Start Time", "Interval", "End Time","End Interval"];
         let notInclude = ["Node Name", "Access_Type", "Protocol"];
-
-        data.map(d => {
+        var temp = []
+        data.map((d,i) => {
             for (var cl in d) {
                 if (notInclude.indexOf(cl) == -1) {
-                    if (cl.indexOf("Rate") !== -1) {
+                    if (cl.indexOf("Rate") !== -1 || cl.indexOf("rate") !== -1 || cl.indexOf("%") !== -1) {
                         if (columns.indexOf(cl) == -1) {
                             columns.push(cl)
+                        }
+                        if(!isNaN(d[cl])){
+                          d[cl] = Math.floor(parseFloat(d[cl])*100)/100
                         }
                     }
 
@@ -82,13 +98,15 @@ const Reports = () => {
                 }
 
             }
+            temp.push(d)
         })
+        console.log("Temo",temp)
         const t = columns.map(c => {
             return { field: c, header: c }
         });
         console.log(t);
         setColumns(t);
-        setFilterData(data);
+        setFilterData(temp);
     }
     const download = (type) => {
         if (filterData.length) {
@@ -164,6 +182,7 @@ const Reports = () => {
     const dynamicColumns = filteredColumns.map((col, i) => {
         return <Column key={col.field} field={col.field} header={col.header} />;
     });
+
     return (
         <div className="p-d-flex">
             <div className="p-col-4">
@@ -197,15 +216,21 @@ const Reports = () => {
                             {
                                 filterData.length !== 0 && <DownloadBtn onClick={download} />
                             }
-
+<Button label="Reset" style={{ width: 120, fontSize: 14 }} onClick={reset}></Button>
                         </div>
                     </div>
                 </Card>
             </div>
+
             <div className="p-col-12">
-                <DataTable value={filterData}>
-                    {dynamicColumns}
-                </DataTable>
+            {
+              filterData.length > 0 ?
+              <DataTable value={filterData}>
+                  {dynamicColumns}
+              </DataTable>
+              :
+              <div>No Data Found</div>
+            }
             </div>
         </div>
     )
