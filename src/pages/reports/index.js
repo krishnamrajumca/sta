@@ -78,7 +78,7 @@ const Reports = () => {
             // console.log("filtered", filtered)
             if (protocal || kpi) {
                 if (protocal) {
-                    if (protocal == "EXcended ISUP") {
+                    if (protocal == "Extended ISUP") {
                         setISUPData()
                     }
                     else {
@@ -89,7 +89,7 @@ const Reports = () => {
 
                 }
                 else {
-                    if (kpi == "ISUP_DETAILS") {
+                    if (kpi == "ISUP DETAILS") {
                         setISUPData()
                     }
                     else {
@@ -266,14 +266,14 @@ const Reports = () => {
                         </div>
                         <div className="p-col-12 p-mb-1">
                             <div>Protocal</div>
-                            <Dropdown value={protocal} options={protocals.concat(["EXcended ISUP"])} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
+                            <Dropdown value={protocal} options={protocals.concat(["Extended ISUP"])} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
                         </div>
                         <div className="p-col-12 p-mb-2 p-d-flex p-jc-center" >
                             (OR)
                         </div>
                         <div className="p-col-12 p-mb-1">
                             <div>KPI</div>
-                            <Dropdown value={kpi} options={kpis.concat(["ISUP_DETAILS"])} onChange={(e) => setKPI(e.target.value)} placeholder="Select KPI" style={{ width: 250 }} />
+                            <Dropdown value={kpi} options={kpis.concat(["ISUP DETAILS"])} onChange={(e) => setKPI(e.target.value)} placeholder="Select KPI" style={{ width: 250 }} />
                         </div>
                         <div className="p-col-12 p-mb-1" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Button label="SUBMIT" style={{ width: 120, fontSize: 14 }} onClick={submit}></Button>

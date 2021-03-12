@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import moment from 'moment'
-const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose, time = "" }) => {
+const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose, time = "", onCloseWithoutAcknowledge }) => {
     console.log(msc1)
     const [msc1Data, setMsc1Data] = useState([]);
     const [msc2Data, setMsc2Data] = useState([]);
@@ -49,7 +49,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose, time
         );
     }
     return (
-        <Dialog header="Acknowledgement" visible={visible} style={{ width: '50vw' }} footer={renderFooter(enableClose)} onHide={() => console.log()}>
+        <Dialog header="Alerts" visible={visible} style={{ width: '50vw' }} footer={renderFooter(enableClose)} onHide={onCloseWithoutAcknowledge}>
             {
                 msc1Data.length > 0 &&
                 <div className="p-col-12 mtb-1">

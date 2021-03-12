@@ -30,6 +30,11 @@ const Header = () => {
         dispatch({ type: "ALERT_ACK", payload: e })
         dispatch({ type: "SET_ALERT_DATA", payload: { msc1: [], msc2: [], gmsc: [] } })
     }
+    const open = () => {
+        if (len !== 0) {
+            setShowAlert(true)
+        }
+    }
     return (
         <div id="navHeader">
             <div className="p-grid p-d-flex p-sm-12 p-p-0" >
@@ -50,14 +55,14 @@ const Header = () => {
                 </div>
                 <div className="p-lg-1">
 
-                    <i className="pi pi-bell p-mr-4 p-text-secondary p-overlay-badge" style={{ fontSize: '1.4rem' }} onClick={() => setShowAlert(true)}>
+                    <i className="pi pi-bell p-mr-4 p-text-secondary p-overlay-badge" style={{ fontSize: '1.4rem' }} onClick={open}>
                         <Badge value={len} size="small"></Badge>
                     </i>
                 </div>
             </div>
             {
                 showAlert &&
-                <Alert visible={showAlert} msc1={alertsData.msc1} msc2={alertsData.msc2} gmsc={alertsData.gmsc} onClose={onClose} time={time} />
+                <Alert visible={showAlert} msc1={alertsData.msc1} msc2={alertsData.msc2} gmsc={alertsData.gmsc} onClose={onClose} time={time} onCloseWithoutAcknowledge={() => setShowAlert(false)} />
             }
         </div>
     )
