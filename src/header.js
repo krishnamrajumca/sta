@@ -43,15 +43,16 @@ const Header = () => {
                     Time :{time}
 
                 </div>
+
+                <div className="p-md-3 p-sm-4 p-justify-end p-d-flex p-jc-end">
+                    <span className="p-mr-2">{username}</span>
+                    <i className="pi pi-power-off" onClick={() => history.push("/")}></i>
+                </div>
                 <div className="p-lg-1">
 
-                    <i className="pi pi-bell p-mr-4 p-text-secondary p-overlay-badge" style={{ fontSize: '1rem' }} onClick={() => setShowAlert(true)}>
+                    <i className="pi pi-bell p-mr-4 p-text-secondary p-overlay-badge" style={{ fontSize: '1.4rem' }} onClick={() => setShowAlert(true)}>
                         <Badge value={len} size="small"></Badge>
                     </i>
-                </div>
-                <div className="p-md-2 p-sm-4 p-justify-end p-d-flex p-jc-end">
-                    <span className="p-mr-2">{username}</span>
-                    <i className="pi pi-power-off " ></i>
                 </div>
             </div>
             {

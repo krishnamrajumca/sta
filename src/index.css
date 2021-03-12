@@ -156,3 +156,6 @@ i.pi{
 .p-panel{
   cursor: pointer;
 }
+.p-badge {
+  font-size: 0.56rem !important;
+}
