@@ -26,7 +26,10 @@ const Reports = () => {
     const reset = () => {
         setStartTime("");
         setEndTime("");
-
+        setProtocal("");
+        setNetwork("");
+        setKPI("")
+        setFilterData([])
     }
     const setISUPData = () => {
         const mscData = dataset["ISUP"];
@@ -46,7 +49,14 @@ const Reports = () => {
                     if (!isNaN(row[cl])) {
                         row[cl] = Math.floor(parseFloat(row[cl]) * 100) / 100
                     }
-
+                    if (cl == "CCR" || cl == "Call_Succ_rate_CSR_ASR") {
+                        if (95 <= row[cl] && 98 >= row[cl]) {
+                            row[cl] = <span style={{ color: 'orange' }}>{row[cl]}</span>
+                        }
+                        if (95 > row[cl]) {
+                            row[cl] = <span style={{ color: 'red' }}>{row[cl]}</span>
+                        }
+                    }
 
                 }
             })
@@ -68,7 +78,7 @@ const Reports = () => {
             // console.log("filtered", filtered)
             if (protocal || kpi) {
                 if (protocal) {
-                    if (protocal == "ISUP") {
+                    if (protocal == "EXcended ISUP") {
                         setISUPData()
                     }
                     else {
@@ -79,13 +89,19 @@ const Reports = () => {
 
                 }
                 else {
-                    const kpiName = kpisList.filter(k => k.id == kpi);
-                    if (kpiName.length) {
-                        const kpiKey = kpiName[0].key;
-                        const protocalData = filtered.filter(m => typeof m[kpiKey] !== "undefined");
-                        console.log(protocalData)
-                        getColumnsOfKpi(protocalData)
+                    if (kpi == "ISUP_DETAILS") {
+                        setISUPData()
                     }
+                    else {
+                        const kpiName = kpisList.filter(k => k.id == kpi);
+                        if (kpiName.length) {
+                            const kpiKey = kpiName[0].key;
+                            const protocalData = filtered.filter(m => typeof m[kpiKey] !== "undefined");
+                            console.log(protocalData)
+                            getColumnsOfKpi(protocalData)
+                        }
+                    }
+
                 }
             }
         }
@@ -250,14 +266,14 @@ const Reports = () => {
                         </div>
                         <div className="p-col-12 p-mb-1">
                             <div>Protocal</div>
-                            <Dropdown value={protocal} options={protocals} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
+                            <Dropdown value={protocal} options={protocals.concat(["EXcended ISUP"])} onChange={(e) => setProtocal(e.target.value)} placeholder="Select Protocal" style={{ width: 250 }} />
                         </div>
                         <div className="p-col-12 p-mb-2 p-d-flex p-jc-center" >
                             (OR)
                         </div>
                         <div className="p-col-12 p-mb-1">
                             <div>KPI</div>
-                            <Dropdown value={kpi} options={kpis} onChange={(e) => setKPI(e.target.value)} placeholder="Select KPI" style={{ width: 250 }} />
+                            <Dropdown value={kpi} options={kpis.concat(["ISUP_DETAILS"])} onChange={(e) => setKPI(e.target.value)} placeholder="Select KPI" style={{ width: 250 }} />
                         </div>
                         <div className="p-col-12 p-mb-1" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Button label="SUBMIT" style={{ width: 120, fontSize: 14 }} onClick={submit}></Button>
