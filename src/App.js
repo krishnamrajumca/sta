@@ -16,11 +16,7 @@ import {
 } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { Panel } from 'primereact/panel';
-import { Dropdown } from 'primereact/dropdown';
-import { RadioButton } from 'primereact/radiobutton';
-import ApexChart from './charts/areaChart'
-import BarChart from './charts/barChart'
-import Cards from './cards/cards'
+
 import moment from 'moment';
 
 import { Provider } from 'react-redux';
@@ -36,7 +32,7 @@ import MSC2 from './pages/msc/msc2'
 import GMSC from './pages/msc/gmsc'
 import ColorChange from './components/degrade'
 import Alert from './components/Alert'
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 let colorChange = new ColorChange();
 // let colorChange = ColorChange.getInstance()
@@ -54,10 +50,10 @@ const Dashboard = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [height, setHeight] = useState(518);
   const [width, setWidth] = useState(1383);
-  const { thresholds,alertAcknowledged } = useSelector(state => state.metaReducer);
+  const { thresholds, alertAcknowledged, alertsData } = useSelector(state => state.metaReducer);
   const dispatch = useDispatch()
   let history = useHistory();
-  console.log("alertAcknowledged",alertAcknowledged)
+  console.log("alertAcknowledged", alertAcknowledged)
   useEffect(() => {
     console.log(selected)
     if (selected) {
@@ -83,9 +79,9 @@ const Dashboard = () => {
     const h = (w / 1383) * 518;
     setWidth(w); setHeight(h);
   }
-  const onClose = (e)=>{
+  const onClose = (e) => {
     setShowAlert(false);
-    dispatch({type:"ALERT_ACK",payload:e})
+    dispatch({ type: "ALERT_ACK", payload: e })
   }
   useEffect(() => {
     if (time && thresholds) {
@@ -94,19 +90,25 @@ const Dashboard = () => {
       const msc1 = colorChange.getData("MSC1", thresholds);
       const msc2 = colorChange.getData("MSC2", thresholds);
       const gmsc = colorChange.getData("GMSC", thresholds);
-      console.log(msc1, msc2, gmsc)
+
 
       setmsc1Color(msc1.color)
       setmsc2Color(msc2.color)
       setgmscColor(gmsc.color)
 
       if (msc1.degradeFileds.length > 0 || msc2.degradeFileds.length > 0 || gmsc.degradeFileds.length) {
+        console.log(msc1, msc2, gmsc)
         setMSC1Degrades(msc1.degradeFileds);
         setMSC2Degrades(msc2.degradeFileds);
         setGMSCDegrades(gmsc.degradeFileds);
-        if(alertAcknowledged.indexOf(time) == -1){
-          setShowAlert(true)
-        }
+        const m1 = alertsData.msc1.concat(msc1.degradeFileds);
+        const m2 = alertsData.msc2.concat(msc2.degradeFileds);
+        const gm = alertsData.gmsc.concat(gmsc.degradeFileds);
+        dispatch({ type: "SET_ALERT_DATA", payload: { msc1: m1, msc2: m2, gmsc: gm } })
+        console.log(alertsData)
+        // if (alertAcknowledged.indexOf(time) == -1) {
+        //   setShowAlert(true)
+        // }
 
       }
     }
@@ -139,7 +141,7 @@ const Dashboard = () => {
       </div>
       {
         showAlert &&
-        <Alert visible={showAlert} msc1={msc1Degrades} msc2={msc2Degrades} gmsc={gmscDegrades} onClose={onClose} time={time}/>
+        <Alert visible={showAlert} msc1={msc1Degrades} msc2={msc2Degrades} gmsc={gmscDegrades} onClose={onClose} time={time} />
       }
     </div>
   )

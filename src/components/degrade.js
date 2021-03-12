@@ -62,11 +62,11 @@ export default class ColorChange {
                         const threshold = thresholds[field];
                         if (threshold) {
                             if (value >= threshold[0] && value <= thresholds[1]) {
-                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'orange' })
+                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'orange', time: this.timeSlot })
                                 have_orange = true
                             }
                             else if (value < threshold[0]) {
-                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'red' })
+                                degradeFileds.push({ protocal: row["Protocol"], field: field, value: value, color: 'red', time: this.timeSlot })
                                 have_red = true;
                             }
                         }

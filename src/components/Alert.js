@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import moment from 'moment'
-const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time="" }) => {
-
+const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose, time = "" }) => {
+    console.log(msc1)
     const [msc1Data, setMsc1Data] = useState([]);
     const [msc2Data, setMsc2Data] = useState([]);
     const [gmscData, setgmscData] = useState([]);
@@ -44,7 +44,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
 
         return (
             <div>
-                <Button label="Close" icon="pi pi-check" onClick={()=>onClose(time)} autoFocus disabled={!isEnable} />
+                <Button label="Close" icon="pi pi-check" onClick={() => onClose(time)} autoFocus disabled={!isEnable} />
             </div>
         );
     }
@@ -56,7 +56,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         msc1Data.map((m, index) => {
                             return (
-                              <Msg key={index} field={m.field} msc="MSC1" time={time} value={m.value} onClick={() => ackMSC('msc1', index)} color={m.color}/>
+                                <Msg key={index} field={m.field} msc="MSC1" time={time} value={m.value} onClick={() => ackMSC('msc1', index)} color={m.color} />
                             )
                         })
                     }
@@ -68,7 +68,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         msc2Data.map((m, index) => {
                             return (
-                                <Msg key={index} field={m.field} msc="MSC2" time={time} value={m.value} onClick={() => ackMSC('msc2', index)} color={m.color}/>
+                                <Msg key={index} field={m.field} msc="MSC2" time={time} value={m.value} onClick={() => ackMSC('msc2', index)} color={m.color} />
                             )
                         })
                     }
@@ -80,7 +80,7 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
                     {
                         gmscData.map((m, index) => {
                             return (
-                              <Msg key={index} field={m.field} msc="GMSC" time={time} value={m.value} onClick={() => ackMSC('gmsc', index)} color={m.color}/>
+                                <Msg key={index} field={m.field} msc="GMSC" time={time} value={m.value} onClick={() => ackMSC('gmsc', index)} color={m.color} />
                             )
                         })
                     }
@@ -89,19 +89,19 @@ const Alert = ({ visible = false, msc1 = [], msc2 = [], gmsc = [], onClose,time=
         </Dialog>
     )
 }
-const Msg = ({field,msc,time,value,onClick,color}) =>{
-  const onAck =()=>{
-    console.log("onAck");
-    onClick();
-  }
-  return(
-    <div className="p-col-12"  style={{ padding: 10, marginBottom: 10, backgroundColor: color, borderRadius: 10, color: 'white' }}>
-        <div>ALERT :GMSC {field} Degreded to Below threshold value</div>
-        <div>Start Time: {moment().format("DD/MM/YYYY")} {time} KPI value :{value}%</div>
-        <div>Probable reason: No response from VMSC/HLR</div>
-        <div>Analytic Views: 5 times occured in last 30 days</div>
-        <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={onAck}>Acknowledge</div>
-    </div>
-  )
+const Msg = ({ field, msc, time, value, onClick, color }) => {
+    const onAck = () => {
+        console.log("onAck");
+        onClick();
+    }
+    return (
+        <div className="p-col-12" style={{ padding: 10, marginBottom: 10, backgroundColor: color, borderRadius: 10, color: 'white' }}>
+            <div>ALERT :GMSC {field} Degreded to Below threshold value</div>
+            <div>Start Time: {moment().format("DD/MM/YYYY")} {time} KPI value :{value}%</div>
+            <div>Probable reason: No response from VMSC/HLR</div>
+            <div>Analytic Views: 5 times occured in last 30 days</div>
+            <div className="p-col-12" style={{ textAlign: 'right', color: 'blue', cursor: 'pointer' }} onClick={onAck}>Acknowledge</div>
+        </div>
+    )
 }
 export default Alert;

@@ -20,26 +20,63 @@ const Reports = () => {
     const [kpi, setKPI] = useState();
     const [filteredColumns, setColumns] = useState([]);
     const [filterData, setFilterData] = useState([])
-    const { networks, protocals, kpis, kpisList } = useSelector(state => state.metaReducer)
+    const [width, setWidth] = useState('100%')
+    const { networks, protocals, kpis, kpisList, thresholds } = useSelector(state => state.metaReducer)
     console.log("counter", moment(startTime).format("HH:mm"), moment(endTime).format("HH:mm"), kpis)
-    const reset = ()=>{
-      setStartTime("");
-      setEndTime("");
+    const reset = () => {
+        setStartTime("");
+        setEndTime("");
 
+    }
+    const setISUPData = () => {
+        const mscData = dataset["ISUP"];
+        const st = roundedTime(startTime);
+        const end = roundedTime(endTime);
+        const filtered = mscData.filter(m => m["Interval"] >= st && m["End Interval"] <= end)
+        let columns = [];
+        console.log("filtered", filtered)
+        if (filtered.length > 0) {
+            var row = filtered[0];
+            for (var cl in row) {
+                if (cl !== "Node Name")
+                    columns.push({ field: cl, header: cl })
+            }
+            filtered.map(row => {
+                for (var cl in row) {
+                    if (!isNaN(row[cl])) {
+                        row[cl] = Math.floor(parseFloat(row[cl]) * 100) / 100
+                    }
+
+
+                }
+            })
+        }
+
+        setColumns(columns);
+        setFilterData(filtered);
+        setWidth(3100);
+        // getColumnsOfProtocal(filtered);
     }
     const submit = () => {
         if (startTime && endTime && network) {
             const st = roundedTime(startTime);
             const end = roundedTime(endTime);
             const mscData = dataset[network];
-            console.log("network data", mscData, st, end)
+            setWidth('100%');
+            // console.log("network data", mscData, st, end)
             const filtered = mscData.filter(m => m["Interval"] >= st && m["End Interval"] <= end)
-            console.log("filtered", filtered)
+            // console.log("filtered", filtered)
             if (protocal || kpi) {
                 if (protocal) {
-                    const protocalData = filtered.filter(m => m["Protocol"] == protocal);
-                    console.log(protocalData)
-                    getColumnsOfProtocal(protocalData)
+                    if (protocal == "ISUP") {
+                        setISUPData()
+                    }
+                    else {
+                        const protocalData = filtered.filter(m => m["Protocol"] == protocal);
+                        console.log(protocalData)
+                        getColumnsOfProtocal(protocalData)
+                    }
+
                 }
                 else {
                     const kpiName = kpisList.filter(k => k.id == kpi);
@@ -55,19 +92,19 @@ const Reports = () => {
     }
 
     const getColumnsOfKpi = (data) => {
-        const columns = ["Start Time", "Interval", "End Time","End Interval"];
-        data.map(d=>{
+        const columns = ["Start Time", "Interval", "End Time", "End Interval"];
+        data.map(d => {
 
         })
         data.map(d => {
             for (var cl in d) {
                 if (cl.indexOf(kpi) !== -1) {
 
-                    if (columns.indexOf(cl) == -1){
-                      columns.push(cl);
+                    if (columns.indexOf(cl) == -1) {
+                        columns.push(cl);
                     }
-                    if(!isNaN(d[cl])){
-                      d[cl] = Math.floor(parseFloat(d[cl])*100)/100
+                    if (!isNaN(d[cl])) {
+                        d[cl] = Math.floor(parseFloat(d[cl]) * 100) / 100
                     }
                 }
             }
@@ -80,18 +117,27 @@ const Reports = () => {
         setFilterData(data);
     }
     const getColumnsOfProtocal = (data) => {
-        const columns = ["Start Time", "Interval", "End Time","End Interval"];
+        const columns = ["Start Time", "Interval", "End Time", "End Interval"];
         let notInclude = ["Node Name", "Access_Type", "Protocol"];
         var temp = []
-        data.map((d,i) => {
+        data.map((d, i) => {
             for (var cl in d) {
                 if (notInclude.indexOf(cl) == -1) {
                     if (cl.indexOf("Rate") !== -1 || cl.indexOf("rate") !== -1 || cl.indexOf("%") !== -1) {
                         if (columns.indexOf(cl) == -1) {
                             columns.push(cl)
                         }
-                        if(!isNaN(d[cl])){
-                          d[cl] = Math.floor(parseFloat(d[cl])*100)/100
+                        if (!isNaN(d[cl])) {
+                            d[cl] = Math.floor(parseFloat(d[cl]) * 100) / 100
+                        }
+                        if (typeof thresholds[cl] !== "undefined") {
+                            var thershold = thresholds[cl];
+                            if (thershold[0] <= d[cl] && thershold[1] >= d[cl]) {
+                                d[cl] = <span style={{ color: 'orange' }}>{d[cl]}</span>
+                            }
+                            if (thershold[0] > d[cl]) {
+                                d[cl] = <span style={{ color: 'red' }}>{d[cl]}</span>
+                            }
                         }
                     }
 
@@ -101,7 +147,8 @@ const Reports = () => {
             }
             temp.push(d)
         })
-        console.log("Temo",temp)
+
+        console.log("Temo", temp)
         const t = columns.map(c => {
             return { field: c, header: c }
         });
@@ -217,20 +264,20 @@ const Reports = () => {
                             {
                                 filterData.length !== 0 && <DownloadBtn onClick={download} />
                             }
-<Button label="Reset" style={{ width: 120, fontSize: 14 }} onClick={reset}></Button>
+                            <Button label="Reset" style={{ width: 120, fontSize: 14 }} onClick={reset}></Button>
                         </div>
                     </div>
                 </Card>
             </div>
 
-            <div className="p-col-12">
-            {
-              filterData.length > 0 &&
-              <DataTable value={filterData}>
-                  {dynamicColumns}
-              </DataTable>
+            <div className="p-col-12" style={{ width: width }}>
+                {
+                    filterData.length > 0 &&
+                    <DataTable value={filterData}>
+                        {dynamicColumns}
+                    </DataTable>
 
-            }
+                }
             </div>
         </div>
     )

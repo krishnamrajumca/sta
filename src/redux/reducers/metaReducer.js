@@ -48,7 +48,12 @@ const initialState = {
         "BICC_Succ_Rate": [45, 55],
         "BICC-Failed_Rate": [3, 5]
     },
-    alertAcknowledged:[]
+    alertAcknowledged: [],
+    alertsData: {
+        msc1: [],
+        msc2: [],
+        gmsc: []
+    }
 
 }
 
@@ -57,7 +62,9 @@ function metaReducer(state = initialState, action) {
         case "SET_USER":
             return { ...state, username: action.username }
         case "ALERT_ACK":
-          return {...state,alertAcknowledged:[...state.alertAcknowledged,action.payload]}
+            return { ...state, alertAcknowledged: [...state.alertAcknowledged, action.payload] }
+        case "SET_ALERT_DATA":
+            return { ...state, alertsData: action.payload }
         default:
             return { ...state }
     }
